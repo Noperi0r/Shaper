@@ -30,6 +30,6 @@ while running:
     # 화면 업데이트
     pygame.display.update()
 
-# Pygame 종료
+# Pygame exit
 pygame.quit()
 sys.exit()
