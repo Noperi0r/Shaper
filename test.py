@@ -1,5 +1,7 @@
 import pygame
 import sys
+from Shape import Shaper
+from Player import Player
 
 # Pygame 초기화
 pygame.init()
@@ -15,9 +17,15 @@ pygame.display.set_caption("Pygame 화면")
 # 화면 색상 설정 (RGB 값)
 background_color = (0, 0, 0)
 
+hexagon = Shaper([400, 300])
+hexagon.MakeNPoints(screen)
+
+player = Player(hexagon)
+
 # 게임 루프
 running = True
 while running:
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -26,7 +34,17 @@ while running:
     screen.fill(background_color)
 
     # 여기에 게임 객체 또는 렌더링 코드를 추가할 수 있습니다.
+    hexagon.MakeNPoints(screen)
+    hexagon.MakeShapeLines(screen)
+    hexagon.DrawNoteArea(screen, 600)
 
+    player.Spawn(screen)    
+    
+    keys = pygame.key.get_pressed()
+    # if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
+    #     player.Move(keys)
+    
+    
     # 화면 업데이트
     pygame.display.update()
 
