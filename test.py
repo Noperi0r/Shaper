@@ -3,6 +3,8 @@ import sys
 from Shape import Shaper
 from Player import Player
 
+
+
 # Pygame 초기화
 pygame.init()
 
@@ -22,6 +24,8 @@ hexagon.MakeNPoints(screen)
 
 player = Player(hexagon)
 
+
+
 # 게임 루프
 running = True
 while running:
@@ -38,8 +42,15 @@ while running:
     hexagon.MakeShapeLines(screen)
     hexagon.DrawNoteArea(screen, 600)
 
+    for i in range(0,6):
+        if i != 0:
+            pygame.draw.line(screen, (255, 0, 255), player.GetPlayerRoutePoints()[i],player.GetPlayerRoutePoints()[i-1], 10)
     player.Spawn(screen)    
     
+    #---------------DEBUG FIELD------------------------- 
+    #print(str(player.IsPlayerInRoute()[0])+ " / " + str(player.IsPlayerInRoute()[1]))
+    print(player.GetRouteSlope())
+ 
     keys = pygame.key.get_pressed()
     # if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
     #     player.Move(keys)

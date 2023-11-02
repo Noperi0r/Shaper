@@ -2,7 +2,7 @@ import pygame
 import math
 
 class Shaper():
-    def __init__(self, centerPoint : list, n=6, radius=100):
+    def __init__(self, centerPoint: list, n=6, radius=100):
         self.n = n
         self.centerPoint = centerPoint
         self.points = [[0,0] for i in range (0, self.n)] # n개 포인트 필요
@@ -18,12 +18,13 @@ class Shaper():
                 x = self.centerPoint[0] + self.radius * math.cos(angle)                        
                 y = self.centerPoint[1] + self.radius * math.sin(angle)                     
                 self.points[i] = [x,y]   
-                print(self.points[i]) # test
-                pygame.draw.circle(screen,(255,255,0),self.points[i], 15)
+                # print(self.points[i]) # test
+                # pygame.draw.circle(screen,(255,255,0),self.points[i], 10)
                 
-                outerX = self.centerPoint[0] + (self.radius+1) * math.cos(angle) # radius + value 수정 시 Player.py playerradius도 동기화 필요
-                outerY = self.centerPoint[1] + (self.radius+10) * math.sin(angle)                    
+                outerX = self.centerPoint[0] + (self.radius+25) * math.cos(angle) # radius + value 수정 시 Player.py playerradius도 동기화 필요
+                outerY = self.centerPoint[1] + (self.radius+25) * math.sin(angle)                    
                 self.playerRoutePoint[i] = [outerX, outerY]
+                # 외곽선 +는 현재 25. Player radius + a 에서 a는 현재 10 
                 
                 
     def MakeShapeLines(self, screen: pygame.display):
