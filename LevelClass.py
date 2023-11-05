@@ -9,13 +9,16 @@ import sys
 class LevelManager():
     def __init__(self, screen:pygame):
         self.screen = screen
-   
+
+
     def Main_screen(self, center_x, center_y, screen:pygame):
-        # 글꼴 및 글꼴 크기 설정
+        # 화면 지우기
         screen.fill((0,0,0))
+
+        # 글꼴 및 글꼴 크기 설정
         font = pygame.font.Font(None, 72)  # 기본 글꼴, 글꼴 크기 72
         text = font.render("SHARPER", True, (255, 255, 255))  # 텍스트 렌더링
-        # print(center_x)
+
         # 텍스트 위치 설정
         text_x = center_x - (text.get_width() // 2)
         text_y = center_y - (text.get_height() // 2)
@@ -26,10 +29,13 @@ class LevelManager():
         start_x = center_x - (start_text.get_width() // 2)
         start_y = text_y + text.get_height() + 20  # "SHARPER" 텍스트 아래에 추가 간격
         screen.blit(start_text, (start_x, start_y))
-        
+
+
     def Gameover_screen(self, center_x, center_y, screen:pygame):
-        # 글꼴 및 글꼴 크기 설정
+        # 화면 지우기
         screen.fill((0,0,0))
+
+        # 글꼴 및 글꼴 크기 설정
         font = pygame.font.Font(None, 72)  # 기본 글꼴, 글꼴 크기 72
         text = font.render("! GAME OVER !", True, (255, 255, 255))  # 텍스트 렌더링
 
@@ -51,21 +57,25 @@ class LevelManager():
         screen.fill((0,0,0))
         pygame.display.set_caption("레벨 선택")
         
-        # 버튼 생성 
-        text_font = pygame.font.Font(None, 36)  # 폰트 및 크기 선택
-        text1 = text_font.render("[ Lv. 1 ]", True, (255, 255, 255))  # 텍스트, 안티앨리어싱 적용, 글자색 지정
-        text2 = text_font.render("[ Lv. 2 ]", True, (255, 255, 255))  # 텍스트, 안티앨리어싱 적용, 글자색 지정
-        text3 = text_font.render("[ Lv. 3 ]", True, (255, 255, 255))  # 텍스트, 안티앨리어싱 적용, 글자색 지정
-        text4 = text_font.render("[ Lv. 4 ]", True, (255, 255, 255))  # 텍스트, 안티앨리어싱 적용, 글자색 지정
+
+        # 폰트 및 크기 선택
+        text_font = pygame.font.Font(None, 36) 
+
+        # 텍스트, 안티앨리어싱 적용, 글자색 지정
+        text1 = text_font.render("[ Lv. 1 ]", True, (255, 255, 255))  
+        text2 = text_font.render("[ Lv. 2 ]", True, (255, 255, 255))  
+        text3 = text_font.render("[ Lv. 3 ]", True, (255, 255, 255))  
+        text4 = text_font.render("[ Lv. 4 ]", True, (255, 255, 255))  
         rect1 = text1.get_rect()
         rect2 = text2.get_rect()
         rect3 = text3.get_rect()
         rect4 = text4.get_rect()
 
-        rect1.topleft = (125, 280)  # 버튼 위치 조정
-        rect2.topleft = (275, 280)  # 버튼 위치 조정
-        rect3.topleft = (425, 280)  # 버튼 위치 조정
-        rect4.topleft = (575, 280)  # 버튼 위치 조정
+        # 버튼 위치 조정
+        rect1.topleft = (125, 280)  
+        rect2.topleft = (275, 280)  
+        rect3.topleft = (425, 280)  
+        rect4.topleft = (575, 280) 
         
         screen.blit(text1, rect1)
         screen.blit(text2, rect2)
@@ -92,4 +102,24 @@ class LevelManager():
             print('level4')
             pygame.display.set_caption("Level 4")
             screen.fill((0, 0, 255))
-            
+
+    # def update_timer(screen):
+    #     clock = pygame.time.Clock()
+    #     start_time = pygame.time.get_ticks()
+
+    #     font = pygame.font.Font(None, 36)
+    #     text_color = (10, 255, 255)
+
+    #     # 현재 시간 가져오기
+    #     current_time = pygame.time.get_ticks()
+    #     elapsed_time = (current_time - start_time) // 1000  # 밀리초(ms)를 초(s)로 변환
+
+    #     # 화면 지우기
+
+    #     # 경과 시간을 텍스트로 랜더링
+    #     text = font.render(f"경과 시간: {elapsed_time} 초", True, text_color)
+    #     screen.blit(text, (10, 10))
+
+    #     pygame.display.flip()
+
+    #     clock.tick(60)  # 초당 60프레임으로 제한
