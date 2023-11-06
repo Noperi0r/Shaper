@@ -9,6 +9,9 @@ class NoteManager():
         self.noteLists = [] # 레벨에 있는 노트 모두 저장   
         self.stage = 0 # 0은 메인화면, 스테이지 선택. 
      
+    def GetNoteLists(self):
+        return self.noteLists
+     
     def LoadNotes(self, note): # 노트 객체 생성 시 실행 
         self.noteLists.append(note)
      
@@ -17,7 +20,7 @@ class NoteManager():
         
     def LoadPatternList(self): # 패턴 파일 읽어서 리스트에 저장. 
         if self.stage == 0:
-            return None
+            pass
         
         patternFile = "./Patterns/"
         patternRange = 0
@@ -46,7 +49,7 @@ class NoteManager():
     # while 안에서 한 번 실행되면 모두 끝날때까지 대기해야 함. 
     def PatternReady(self): # 리스트 pop 하면서 노트 ReadyNote 실행
         if self.ManagerOnTask():
-            return None
+            pass
         
         while len(self.patternList) != 0:
             #print(len(self.patternList))

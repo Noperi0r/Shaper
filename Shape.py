@@ -12,7 +12,8 @@ class Shaper():
         self.playerRoutePoint = [[0,0] for i in range (0, self.n)]
         
 
-    def MakeNPoints(self, screen: pygame.display): # n개의 points 생성
+    def MakeNPoints(self, screen: pygame.display, n): # n개의 points 생성
+        self.n = n
         for i in range (self.n):
                 angle = self.eachAngle * i
                 x = self.centerPoint[0] + self.radius * math.cos(angle)                        
@@ -46,10 +47,12 @@ class Shaper():
         return noteCoordinates # n 6 이면 6개의 좌표 반환
     
     # ----- LevelManager 관련 -----
-    def LoadShaper(self, n): # 그 레벨 시작할 때 도형 생성하는거 여기로 옮겨줘야 함
+    def LoadShaper(self, screen:pygame.display, n: int): # 그 레벨 시작할 때 도형 생성하는거 여기로 옮겨줘야 함
         self.n = n           # 원래 만들었던 코드는 백업, 이 방법 망하면 원래 썼던 코드 써야할 수 있음 
-    
-    # def ResetShaper(self): # 레벨 종료 아니면 게임 오버될 때 도형 삭제하는거 여기로 옮겨줘야 함
+        self.MakeNPoints(screen)
+        self.MakeShapeLines(screen)
+        
+    #def ResetShaper(self): # 레벨 종료 아니면 게임 오버될 때 도형 삭제하는거 여기로 옮겨줘야 함
             
 
         

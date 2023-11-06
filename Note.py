@@ -42,7 +42,6 @@ class Note: # 충돌판정 여기서
         borderVectors[0][1] /= math.dist(self.shaper.centerPoint, borderCoords[0])
         borderVectors[1][0] /= math.dist(self.shaper.centerPoint, borderCoords[0])
         borderVectors[1][1] /= math.dist(self.shaper.centerPoint, borderCoords[0])
-        print(str(self.areaNum) + " " + str(borderVectors))
         return borderVectors
     
     def GetAreaBorderPoints(self, borderCoords): # n개 borderCoord에서 

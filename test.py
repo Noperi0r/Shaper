@@ -23,7 +23,7 @@ pygame.display.set_caption("Pygame 화면")
 background_color = (0, 0, 0)
 
 hexagon = Shaper([400, 300])
-hexagon.MakeNPoints(screen)
+hexagon.MakeNPoints(screen, 6)
 
 
 noteManager = NoteManager()
@@ -31,7 +31,7 @@ noteManager.LoadManager(1)
 
 player = Player(hexagon)
 
-noteTest = Note(hexagon, screen, noteManager)  
+noteTest = Note(hexagon, screen, noteManager,6)  
 noteTest2 = Note(hexagon, screen, noteManager)  
 noteTest3= Note(hexagon, screen, noteManager)  
 noteTest4= Note(hexagon, screen, noteManager)  
@@ -55,7 +55,7 @@ while running:
     screen.fill(background_color)
 
     # 여기에 게임 객체 또는 렌더링 코드를 추가할 수 있습니다.
-    hexagon.MakeNPoints(screen)
+    hexagon.MakeNPoints(screen, 6)
     hexagon.MakeShapeLines(screen)
     borderCoords = hexagon.DiscernNoteArea(screen, 300) # ★ 외부에서 실행되서 좌표 받아와야 함
 
