@@ -1,88 +1,131 @@
 import pygame
 import sys
+from Shape import Shaper
+from Player import Player
+from LevelClass import LevelManager
 
 # Pygame 초기화
 pygame.init()
 
-# 화면 크기 및 색상 정의
+# 화면 크기 설정 (너비 x 높이)
 screen_width = 800
 screen_height = 600
-bg_color = (0, 0, 0)  # 검은색 배경
-
-# Pygame 창 생성
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Shaper!")
 
-# 중심 좌표 설정
 center_x = screen_width // 2
 center_y = screen_height // 2
 
-# 객체 위치 설정
-object_x = 0  # 예시로 초기 객체 위치를 (0, 0)으로 설정
+# 화면 타이틀 설정
+pygame.display.set_caption("Sharper!")
 
-# 화면 정중앙 좌표 반환 함수
+# 화면 색상 설정 (RGB 값)
+background_color = (0, 0, 0)
 
-def Center_screen(screen_width, screen_height):
+# LevelClass Class 불러오기
+level = LevelManager(screen)
+level.Main_screen(center_x, center_y, screen)
 
-        return screen_width // 2 , screen_height // 2
+# 화면 전환 트리거
+space_to_main = False
+esc_to_level_selection = False
 
-# 정중앙 0,0 함수
-def Center_object(object_width, object_height):
-        center_object_x = center_x + object_x - object_width/2
-        center_object_y = center_y - object_height/2
-        return center_object_x, center_object_y
+# 사운드
+button_sound = pygame.mixer.Sound('./sound/effect/menu_sound.mp3')
 
-# 글꼴 및 글꼴 크기 설정
-font = pygame.font.Font(None, 72)  # 기본 글꼴, 글꼴 크기 72
-text = font.render("SHARPER", True, (255, 255, 255))  # 텍스트 렌더링
 
-# 텍스트 위치 설정
-text_x = center_x - (text.get_width() // 2)
-text_y = center_y - (text.get_height() // 2)
+# 타이머 + 프레임 관련 설정
+timer = False
+seconds = 0
+deltaTime=0
+clock = pygame.time.Clock()
+clock.tick(60)
+
+# shaper!
+shaper = Shaper([400, 300])
+borderCoords =  shaper.DiscernNoteArea(screen, 300)
+
+
+def Stage1Loop():
+    #shaper.LoadShaper(6)
+    pass
+def Stage2Loop():
+    pass
+def Stage3Loop():
+    pass
+def Stage4Loop():
+    pass
 
 # 메인 루프
 running = True
-show_start_text = True  # "게임 시작" 텍스트를 표시할지 여부
-
-
-
 while running:
+
+    # 델타 타임 관련 변수
+    start_time = pygame.time.get_ticks()
+
+    # 타이머 출력
+    if timer == True :
+        screen.fill((0,0,0))
+        seconds = level.Update_timer(seconds, deltaTime)
+
+    if level.isStage1 == True:   Stage1Loop()
+    elif level.isStage2 == True : Stage2Loop()
+    elif level.isStage3 == True : Stage3Loop()
+    elif level.isStage4 == True : Stage4Loop()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                show_start_text = False  # 스페이스 바를 누르면 "게임 시작" 텍스트 숨김
 
-    # 화면 지우기
-    screen.fill(bg_color)
+            # 메인화면
+            if(event.key == pygame.K_ESCAPE) & (space_to_main == True) & (esc_to_level_selection == False):
+                level.Main_screen(center_x, center_y, screen)
+                space_to_main = False
+                
+            # 레벨 선택
+            if (event.key == pygame.K_SPACE) & (space_to_main == False):
+                level.Level_selection(screen)
+                space_to_main = True
+                esc_to_level_selection = False
+        
+            # 게임 오버
+            if(event.key == pygame.K_ESCAPE) & (space_to_main == True) & (esc_to_level_selection == True):
+                level.Gameover_screen(center_x, center_y, screen)
+                space_to_main = True
+                esc_to_level_selection = False
 
-    # "SHARPER" 텍스트 그리기
-    screen.blit(text, (text_x, text_y))
-
-    # "게임 시작" 텍스트 그리기
-    if show_start_text:
-        start_font = pygame.font.Font(None, 36)  # 다른 글꼴 및 크기 설정
-        start_text = start_font.render("Press SPACE to start", True, (255, 255, 255))
-        start_x = center_x - (start_text.get_width() // 2)
-        start_y = text_y + text.get_height() + 20  # "SHARPER" 텍스트 아래에 추가 간격
-        screen.blit(start_text, (start_x, start_y))
-
-
+            
+            if (space_to_main == True) & (esc_to_level_selection == False):
+                # 레벨 1 ~ 4로 전환
+                if event.key == pygame.K_1 :
+                    level.Level_change(1, screen)
+                    space_to_main = True
+                    esc_to_level_selection = True
+                    timer = True
+                elif event.key == pygame.K_2:
+                    level.Level_change(2, screen)
+                    space_to_main = True
+                    esc_to_level_selection = True
+                    timer = True
+                elif event.key == pygame.K_3:
+                    level.Level_change(3, screen) 
+                    space_to_main = True
+                    esc_to_level_selection = True
+                    timer = True
+                elif event.key == pygame.K_4:
+                    level.Level_change(4, screen)
+                    space_to_main = True
+                    esc_to_level_selection = True
+                    timer = True
 
     
-    # 객체를 중심으로 그리기 (화면 중앙)
-    object_width = 100  # 예시로 객체 너비 설정
-    object_height = 100  # 예시로 객체 높이 설정
-    object_color = (255, 0, 0)  # 예시로 객체 색상 설정
-    #object_rect = pygame.Rect([center_x + object_x - object_width / 2, center_y - object_height / 2], object_width, object_height)
-    print(Center_object(50,50)[0])
-    
-    object_rect = pygame.Rect(Center_object(object_width, object_height)[0],Center_object(object_width, object_height)[1], object_width, object_height)
-    pygame.draw.rect(screen, object_color, object_rect)
+    # 델타타임 관련변수
+    end_time = pygame.time.get_ticks() 
+    deltaTime = end_time - start_time
 
-    pygame.display.flip()
 
-# Pygame 종료
+    pygame.display.update()
+
+# Pygame exit
 pygame.quit()
 sys.exit()

@@ -6,6 +6,10 @@ import sys
 
 
 class LevelManager():
+    isStage1 = False
+    isStage2 = False
+    isStage3 = False
+    isStage4 = False
     def __init__(self, screen:pygame):
         self.screen = screen
 
@@ -58,6 +62,10 @@ class LevelManager():
         start_y = text_y + text.get_height() + 20  # "SHARPER" 텍스트 아래에 추가 간격
         screen.blit(start_text, (start_x, start_y))  
 
+        self.isStage1 = False
+        self.isStage2 = False
+        self.isStage3 = False
+        self.isStage4 = False
 
     def Level_selection(self, screen):
         # 화면 생성 + 이벤트 발생시 해당함수 호출
@@ -97,36 +105,25 @@ class LevelManager():
             print('level1')
             pygame.display.set_caption("Level 1")
             screen.fill((255, 255, 255))
+            self.isStage1 = True
+
         if level==2:
             print('level2')
             pygame.display.set_caption("Level 2")
             screen.fill((255, 0, 0))
+            self.isStage2 = True
+
         if level==3:
             print('level3')
             pygame.display.set_caption("Level 3")
             screen.fill((0, 255, 0))
+            self.isStage3 = True
+
         if level==4:
             print('level4')
             pygame.display.set_caption("Level 4")
             screen.fill((0, 0, 255))
+            self.isStage4 = True
 
-    # def update_timer(screen):
-    #     clock = pygame.time.Clock()
-    #     start_time = pygame.time.get_ticks()
-
-    #     font = pygame.font.Font(None, 36)
-    #     text_color = (10, 255, 255)
-
-    #     # 현재 시간 가져오기
-    #     current_time = pygame.time.get_ticks()
-    #     elapsed_time = (current_time - start_time) // 1000  # 밀리초(ms)를 초(s)로 변환
-
-    #     # 화면 지우기
-
-    #     # 경과 시간을 텍스트로 랜더링
-    #     text = font.render(f"경과 시간: {elapsed_time} 초", True, text_color)
-    #     screen.blit(text, (10, 10))
-
-    #     pygame.display.flip()
 
     #     clock.tick(60)  # 초당 60프레임으로 제한
