@@ -5,10 +5,17 @@ from enum import Enum
 import sys
 
 
-
 class LevelManager():
     def __init__(self, screen:pygame):
         self.screen = screen
+
+    def Update_timer(self, seconds, deltaTime):
+        # seconds += clock.get_time() / 1000
+        seconds += deltaTime/1000
+        font = pygame.font.Font(None, 36)
+        text = font.render(f": {int(seconds)}", True, (0, 255, 0))
+        self.screen.blit(text, (10, 10))
+        return seconds
 
 
     def Main_screen(self, center_x, center_y, screen:pygame):
