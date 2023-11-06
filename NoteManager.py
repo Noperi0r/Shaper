@@ -1,37 +1,78 @@
 import pygame
 from Shape import Shaper
-from Note import Note
+#from Note import Note
+import random
 
 class NoteManager():
-    def __init__(self, shaper: Shaper, screen: pygame.display):
-        self.shaper = shaper
-        self.pattern = []
-        self.screen = screen
-    
-   
-    # 이것도 player의 GetPlayerRoutePoints처럼 인덱스 작은 순대로 저장
-    # areaNum은 0말고 1부터 시작해야 됨 
-    def SetNoteAreas(self, areaNum): # areaNum에 따라서 인접 경계 벡터 두개 return
-        if areaNum > self.shaper.n: 
-            print("Area Number Error")
-            return -1 
-        borderVectors = self.GetAreaBorderVectors()
-        if areaNum == self.shaper.n:
-            return [borderVectors[0], borderVectors[areaNum-1]]
-        return [borderVectors[areaNum-1], borderVectors[areaNum]]
-            
-    def MakeNote(self, areaNum) -> list:...
-        # 노트 네 점의 좌표 필요. 
-    #노트의 네 가지 좌표 도출 > draw.polygon > 네 좌표 리스트 반환
-    
-    def MoveNote(self, note) -> None: ...
-    # 노트 각각에 대해서 작동. self.noteSpeed에 따라 네 점의 좌표 변화
-    # => GetAreaBorderVectors 필요
-    # 예외처리 > center좌표 도달하면 네 점 각각 모두 경우 체크하고 포지션 center로 고정.
-    
-    def DeleteNote(self, note) -> None: ... 
-    # 도형 안으로 노트 들어가면 삭제 OR 그냥 네 점 모두 center 좌표가 되면 삭제.
-    
+    def __init__(self):
+        self.patternList = []
+        self.noteLists = [] # 레벨에 있는 노트 모두 저장   
+        self.stage = 0 # 0은 메인화면, 스테이지 선택. 
+     
+    def LoadNotes(self, note): # 노트 객체 생성 시 실행 
+        self.noteLists.append(note)
+     
+    def LoadManager(self, stage: int): # 노트 다 불러오고, 스테이지 시작시 실행
+        self.stage = stage
+        
+    def LoadPatternList(self): # 패턴 파일 읽어서 리스트에 저장. 
+        if self.stage == 0:
+            return None
+        
+        patternFile = "./Patterns/"
+        patternRange = 0
+        if self.stage == 1:
+            patternFile += "S1_"
+            patternRange = 5 # 패턴 랜덤 숫자 넣을거
+        elif self.stage == 2:
+            patternFile += "S2_"
+        elif self.stage == 3:
+            patternFile += "S3_"
+        
+        # random pattern number set 
+        #patternNum = random.randrange(patternRange)
+        patternNum = 1
+        patternFile += str(patternNum)
+        print(patternFile)
+        print(self.noteLists)
+        
+        with open(patternFile, 'r') as file: # 제목 형식 아직 안 정함
+            for line in file:
+                numbers = line.split()
+                noteSpawnInfo = [int(num) for num in numbers]
+                self.patternList.append(noteSpawnInfo)
+        
+    # 실행은 어디서? 레벨에서. 
+    # while 안에서 한 번 실행되면 모두 끝날때까지 대기해야 함. 
+    def PatternReady(self): # 리스트 pop 하면서 노트 ReadyNote 실행
+        if self.ManagerOnTask():
+            return None
+        
+        while len(self.patternList) != 0:
+            #print(len(self.patternList))
+            patternInfo = self.patternList.pop(0) # 패턴정보 AREA / SPAWNTIME 불러옴.
+            patternInfo = [int(patternInfo[0]), int(patternInfo[1])]
+            # 몇 초뒤에 나오게 할건지에 대한 코드 추가 필요
+            for note in self.noteLists:
+                if note.GetAreaNum() == -1:
+                    # print(len(self.noteLists)) # OK 
+                    # print(patternInfo[0]) # patterninfo OK
+                    note.ReadyNote(patternInfo[0]) # Isnotestandby는 false. > Releasenote 언제하지?
+                    break 
+                
+    def ReleasePattern(self, borderCoords, screen):
+        for note in self.noteLists:
+            note.ReleaseNote(borderCoords, screen)
+        
+    def ManagerOnTask(self):
+        for note in self.noteLists:
+            if note.GetAreaNum() != -1:
+                return True
+        return False
+             
+ 
+    # def ResetManager(self) # 스테이지 종료 or 게임 오버 시 실행
+
     
     # 패턴 파일 기획 
     # Time, Area >> ex. 3 5 > 파일 읽어들인지 3초 뒤에 5번 영역에서 노트 생성. 

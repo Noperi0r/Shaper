@@ -24,24 +24,32 @@ class Player():
         availablePoints = [] 
         routeLength = math.dist(routePoints[0], routePoints[1])
         for i in range(self.shaper.n):
+            #print(str(i) + ": " + str(self.GetPlayerRoutePoints()[i])) # DEBUG
+
             if  math.dist(routePoints[i], self.playerPos) <= routeLength and len(availablePoints) < 2: # !! = 고려 필요? 
                 availablePoints.append(routePoints[i]) # 0부터 n-1까지 loop 순서대로 가므로, 추가되는 것은 작은 index 순.
-            if len(availablePoints) == 2:
-                if i == (self.shaper.n -1): # 마지막 선분 영역에 대한 예외 처리 
-                    availablePoints = [availablePoints[1], availablePoints[0]] 
-                return availablePoints
-            
+            elif math.dist(routePoints[i], self.playerPos) > routeLength and len(availablePoints) >= 2: # 예외처리 TESTESTESTESTESTESTSET
+                 if routePoints[i] in availablePoints:
+                     availablePoints.pop(routePoints[i])
+                     
+        if len(availablePoints) == 2:
+            # if self.GetPlayerRoutePoints()[self.shaper.n-1] in availablePoints and self.GetPlayerRoutePoints()[0] in availablePoints : # 마지막 선분 영역에 대한 예외 처리 
+            #     print(self.GetPlayerRoutePoints()[self.shaper.n-1])
+            #     #availablePoints = [availablePoints[1], availablePoints[0]] 
+            #     print(availablePoints) # DEBUG
+            return availablePoints
+
         if len(availablePoints) == 1:
             idx = -1
-            for point in routePoints:
-                if point == availablePoints[0]:
-                    print("OK, Let us get it: " + str(i))
+            for i in range(len(routePoints)):
+                if routePoints[i] in availablePoints:
+                    print("OK, Let us get it: " + str(i) + "/ " + str(availablePoints))
                     idx = i
                     break     
 
             if keys[pygame.K_RIGHT]: # 5 >> 0 경우 예외 
                 if idx == (self.shaper.n-1):
-                    availablePoints.append(routePoints[0])     
+                    availablePoints.append(routePoints[idx])     
                 else:
                     availablePoints.append(routePoints[idx+1])
                 self.playerPos = availablePoints[0]
@@ -50,7 +58,7 @@ class Player():
                     availablePoints.append(routePoints[(self.shaper.n - 1)])
                 else:
                     availablePoints.append(routePoints[idx-1])
-                    availablePoints = [availablePoints[1], availablePoints[0]]
+                availablePoints = [availablePoints[1], availablePoints[0]]
                 self.playerPos = availablePoints[1] 
             return availablePoints
             
@@ -82,15 +90,24 @@ class Player():
             dirVector[0] = nearRoutePoints[1][0] - nearRoutePoints[0][0] # default: 시계방향
             dirVector[1] = nearRoutePoints[1][1] - nearRoutePoints[0][1] 
         elif keys[pygame.K_LEFT]: #K left. Counter Clockwise 
-            dirVector[0] = nearRoutePoints[0][0] - nearRoutePoints[1][0] # default: 시계방향
+            dirVector[0] = nearRoutePoints[0][0] - nearRoutePoints[1][0] 
             dirVector[1] = nearRoutePoints[0][1] - nearRoutePoints[1][1] 
 
+        if math.dist(nearRoutePoints[1], nearRoutePoints[0]) == 0:
+                print(self.shaper.playerRoutePoint[0])
+                print(nearRoutePoints[1], nearRoutePoints[0])
+                
         dirVector[0] /= math.dist(nearRoutePoints[1], nearRoutePoints[0]) # Normalize
         dirVector[1] /= math.dist(nearRoutePoints[1], nearRoutePoints[0]) 
-         
+        
+        
         self.playerPos[0] += self.speed * dirVector[0]
         self.playerPos[1] += self.speed * dirVector[1]
         # draw  
 
     def GetPlayerPos(self):
         return self.playerPos
+    
+    #-----Called by LevelManager-----
+    #def LoadPlayer(self) # 스테이지 로드 시 실행
+    #def ResetPlayer(self) # gameover or 스테이지 종료 시 실행 

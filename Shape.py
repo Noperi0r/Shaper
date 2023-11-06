@@ -45,7 +45,11 @@ class Shaper():
             pygame.draw.circle(screen, (255,255,255), [x,y], 10)
         return noteCoordinates # n 6 이면 6개의 좌표 반환
     
+    # ----- LevelManager 관련 -----
+    def LoadShaper(self, n): # 그 레벨 시작할 때 도형 생성하는거 여기로 옮겨줘야 함
+        self.n = n           # 원래 만들었던 코드는 백업, 이 방법 망하면 원래 썼던 코드 써야할 수 있음 
     
+    # def ResetShaper(self): # 레벨 종료 아니면 게임 오버될 때 도형 삭제하는거 여기로 옮겨줘야 함
             
 
         
