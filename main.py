@@ -67,7 +67,7 @@ def Stage1Loop():
     shaper.MakeNPoints(screen, 4)
     
     borderCoords = shaper.DiscernNoteArea(screen, 900)
-    print(deltaTime)
+    #print(deltaTime)
     noteManager.PatternReady() # 수정 필요
     noteManager.DeployPattern(borderCoords, screen, deltaTime, player.GetPlayerPos())
     #print(deltaTime)
@@ -118,12 +118,15 @@ while running:
     #screen.fill(background_color)
     #GetDeltaTime(prevTime)
     
-    # 타이머 출력
-    if isTimerOn:
-        seconds = level.Update_Timer(seconds, deltaTime)
+
         
     if level.isStage1:   
         Stage1Loop()
+        isTimerOn = True
+        # 타이머 출력
+        if isTimerOn:
+            #print(deltaTime)
+            seconds = level.Update_timer(seconds, deltaTime)
         
     elif level.isStage2: 
         borderCoords = shaper.DiscernNoteArea(screen, 900)
@@ -157,7 +160,7 @@ while running:
         
             # 게임 오버
             if event.key == pygame.K_ESCAPE and space_to_main == True and esc_to_level_selection == True:
-                level.Gameover_screen(center_x, center_y, screen)
+                level.Gameover_screen(center_x, center_y, screen, seconds)
                 sound_Gameover.play()
                 space_to_main = True
                 esc_to_level_selection = False

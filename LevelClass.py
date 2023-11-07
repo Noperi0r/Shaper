@@ -15,9 +15,10 @@ class LevelManager():
 
     def Update_timer(self, seconds, deltaTime):
         # seconds += clock.get_time() / 1000
-        seconds += deltaTime/1000
+        seconds += deltaTime
+        #print('deltaTime:{}, Seconds:{}', deltaTime, seconds)
         font = pygame.font.Font(None, 36)
-        text = font.render(f" Score : {int(seconds)}", True, (0, 255, 0))
+        text = font.render(f" Score : {round(seconds, 2)}", True, (0, 255, 0))
         self.screen.blit(text, (600, 20))
         return seconds
 
@@ -42,13 +43,15 @@ class LevelManager():
         screen.blit(start_text, (start_x, start_y))
 
 
-    def Gameover_screen(self, center_x, center_y, screen:pygame):
+    def Gameover_screen(self, center_x, center_y, screen:pygame, score):
         # 화면 지우기
         screen.fill((0,0,0))
 
         # 글꼴 및 글꼴 크기 설정
         font = pygame.font.Font(None, 72)  # 기본 글꼴, 글꼴 크기 72
         text = font.render("! GAME OVER !", True, (255, 255, 255))  # 텍스트 렌더링
+
+        
 
         # 텍스트 위치 설정
         text_x = center_x - (text.get_width() // 2)
@@ -61,6 +64,13 @@ class LevelManager():
         start_x = center_x - (start_text.get_width() // 2)
         start_y = text_y + text.get_height() + 20  # "SHARPER" 텍스트 아래에 추가 간격
         screen.blit(start_text, (start_x, start_y))  
+
+
+        # 점수 표시
+        score_font = pygame.font.Font(None, 36)  # 기본 글꼴, 글꼴 크기 72
+        score_text = score_font.render(f" Score : {round(score, 2)}", True, (255, 255, 255))
+        screen.blit(score_text, (start_x, start_y+100))
+        
 
         self.isStage1 = False
         self.isStage2 = False
