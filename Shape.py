@@ -12,20 +12,25 @@ class Shaper():
         
 
     def MakeNPoints(self, screen: pygame.display, n: int): # n개의 points 생성
-        self.n = n
+        if self.n != n:
+            self.n = n
+            self.eachAngle = (360 / self.n) * math.pi / 180.0 # ex n이 6이면 60도
+            self.points = [[0,0] for i in range(self.n)]
+            self.playerRoutePoint = [[0,0] for i in range(self.n)]
+        
         for i in range (self.n):
-                angle = self.eachAngle * i
-                x = self.centerPoint[0] + self.radius * math.cos(angle)                        
-                y = self.centerPoint[1] + self.radius * math.sin(angle)                     
-                self.points[i] = [x,y]   
-                # print(self.points[i]) # test
-                # pygame.draw.circle(screen,(255,255,0),self.points[i], 10)
-                
-                outerX = self.centerPoint[0] + (self.radius+15) * math.cos(angle) # radius + value 수정 시 Player.py playerradius도 동기화 필요
-                outerY = self.centerPoint[1] + (self.radius+15) * math.sin(angle)                    
-                self.playerRoutePoint[i] = [outerX, outerY]
-                # 외곽선 +는 현재 25. Player radius + a 에서 a는 현재 10 
-                
+            angle = self.eachAngle * i
+            x = self.centerPoint[0] + self.radius * math.cos(angle)                        
+            y = self.centerPoint[1] + self.radius * math.sin(angle)       
+            self.points[i] = [x,y]   
+            outerX = self.centerPoint[0] + (self.radius+15) * math.cos(angle) # radius + value 수정 시 Player.py playerradius도 동기화 필요
+            outerY = self.centerPoint[1] + (self.radius+15) * math.sin(angle)      
+            self.playerRoutePoint[i] = [outerX, outerY]              
+            #self.playerRoutePoint[i] = [outerX, outerY]
+            # 외곽선 +는 현재 25. Player radius + a 에서 a는 현재 10 
+        # self.points = points
+        # self. playerRoutePoint = playerRoutePoint
+        
     # 이거 그냥 나중에 draw.polygon으로 변경            
     def MakeShapeLines(self, screen: pygame.display):
         pygame.draw.polygon(screen, (237, 31, 89), self.points)

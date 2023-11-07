@@ -44,7 +44,7 @@ class Note: # 충돌판정 여기서
             # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum][0]))
             # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum][1]))
             
-            # 이상 무 
+            # 동일
             
         #print(math.dist(self.shaper.centerPoint, borderCoords[self.areaNum-1])) # 이상 무 
         borderVectors[0][0] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # x

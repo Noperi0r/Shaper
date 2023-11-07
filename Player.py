@@ -7,10 +7,18 @@ class Player():
     # Init 순서는 Shaper가 먼저 이루어져야 함 
     def __init__(self, shaper: Shaper): 
         self.shaper = shaper # 상속 말고, 변수로 Shape 가져야 함.
-        self.speed = 10
-        self.playerRadius = shaper.radius + 50
+        self.speed = 17.5
+        self.playerRadius = shaper.radius + 10
         self.playerPos = [self.shaper.playerRoutePoint[1][0], self.shaper.playerRoutePoint[1][1]]
         #self.shapeLength = math.dist(shaper.points[0], shaper.points[1]) 
+        self.angleSpeed = 10
+
+    def LoadPlayer(self, speed):
+        self.speed = speed
+        self.playerPos = [self.shaper.playerRoutePoint[1][0], self.shaper.playerRoutePoint[1][1]]
+
+    def RemovePlayer(self):
+        self.playerPos = [0,0]
 
     def DrawPlayer(self, surface: pygame.display ):
         pygame.draw.circle(surface, (255,255,255), self.playerPos, 10)
@@ -42,7 +50,6 @@ class Player():
         elif len(availablePoints) == 1:
             for i in range(len(routePoints)):
                 if routePoints[i] in availablePoints: 
-                    print("OK, Let us get it: " + str(i) + "/ " + str(availablePoints))
                     idx = i
                     break     
             if keys[pygame.K_RIGHT]: # 5 >> 0 경우 예외 
@@ -86,9 +93,29 @@ class Player():
         self.playerPos[1] += self.speed * dirVector[1]
         # draw  
 
+    def AngleMove(self, keys):
+        radAngle = math.radians(self.angleSpeed)
+        curPos = pygame.math.Vector2(self.playerPos[0], self.playerPos[1])
+        center = pygame.math.Vector2(self.shaper.centerPoint[0], self.shaper.centerPoint[1])
+        playerVector = [self.playerPos[0]-self.shaper.centerPoint[0], self.playerPos[1]-self.shaper.centerPoint[1]]
+        
+        # 선형변환 이용
+        if keys[pygame.K_RIGHT]: # clockwise        
+            self.playerPos[0] = self.shaper.centerPoint[0] + playerVector[0] * math.cos(radAngle) - playerVector[1] * math.sin(radAngle)
+            self.playerPos[1] = self.shaper.centerPoint[1] + playerVector[0] * math.sin(radAngle) + playerVector[1] * math.cos(radAngle)
+            
+            #newPos = curPos.rotate_rad(radAngle)
+        elif keys[pygame.K_LEFT]:         
+            self.playerPos[0] = self.shaper.centerPoint[0] + playerVector[0] * math.cos(-radAngle) - playerVector[1] * math.sin(-radAngle)
+            self.playerPos[1] = self.shaper.centerPoint[1] + playerVector[0] * math.sin(-radAngle) + playerVector[1] * math.cos(-radAngle)
+            #newPos = curPos.rotate_rad(-radAngle)           
+        #self.playerPos = [newPos.x, newPos.y]                                                          
+        print(self.shaper.centerPoint)                                                                               
     def GetPlayerPos(self):
         return self.playerPos
     
     #-----Called by LevelManager-----
     #def LoadPlayer(self) # 스테이지 로드 시 실행
     #def ResetPlayer(self) # gameover or 스테이지 종료 시 실행 
+        
+    
