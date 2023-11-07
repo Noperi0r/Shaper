@@ -131,10 +131,20 @@ while running:
     elif level.isStage2: 
         borderCoords = shaper.DiscernNoteArea(screen, 900)
         Stage2Loop()
+        isTimerOn = True
+        # 타이머 출력
+        if isTimerOn:
+            #print(deltaTime)
+            seconds = level.Update_timer(seconds, deltaTime)
         
     elif level.isStage3:
         borderCoords = shaper.DiscernNoteArea(screen, 900)
         Stage3Loop()
+        isTimerOn = True
+        # 타이머 출력
+        if isTimerOn:
+            #print(deltaTime)
+            seconds = level.Update_timer(seconds, deltaTime)
                 
     # elif level.isStage4:
     #     borderCoords =  shaper.DiscernNoteArea(screen, 300)
