@@ -4,6 +4,7 @@ from Shape import Shaper
 from Player import Player
 from LevelClass import LevelManager
 from NoteManager import NoteManager
+import time
 
 # Pygame 초기화
 pygame.init()
@@ -17,7 +18,7 @@ center_x = screen_width // 2
 center_y = screen_height // 2
 
 # 화면 타이틀 설정
-pygame.display.set_caption("Sharper!")
+pygame.display.set_caption("Shaper!")
 
 # 화면 색상 설정 (RGB 값)
 background_color = (0, 0, 0)
@@ -31,8 +32,8 @@ space_to_main = False
 esc_to_level_selection = False
 
 # 사운드
-button_sound = pygame.mixer.Sound('./sound/effect/menu_sound1.mp3')
-gameover_sound = pygame.mixer.Sound('./sound/effect/game_over.wav')
+sound_Button = pygame.mixer.Sound('./sound/effect/menu_sound1.mp3')
+sound_Gameover = pygame.mixer.Sound('./sound/effect/game_over.wav')
 
 # 타이머 + 프레임 관련 설정
 timer = False
@@ -40,6 +41,8 @@ seconds = 0
 deltaTime=0
 clock = pygame.time.Clock()
 clock.tick(60)
+
+prevTime = time.time()
 
 # shaper!
 shaper = Shaper([400, 300])
@@ -67,10 +70,14 @@ while running:
     if timer == True :
         seconds = level.Update_timer(seconds, deltaTime)
 
-    if level.isStage1 == True:   Stage1Loop()
-    elif level.isStage2 == True : Stage2Loop()
-    elif level.isStage3 == True : Stage3Loop()
-    elif level.isStage4 == True : Stage4Loop()
+    if level.isStage1:   
+        Stage1Loop()
+    elif level.isStage2: 
+        Stage2Loop()
+    elif level.isStage3: 
+        Stage3Loop()
+    elif level.isStage4: 
+        Stage4Loop()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -78,30 +85,30 @@ while running:
         elif event.type == pygame.KEYDOWN:
 
             # 메인화면
-            if(event.key == pygame.K_ESCAPE) & (space_to_main == True) & (esc_to_level_selection == False):
+            if event.key == pygame.K_ESCAPE and space_to_main == True and esc_to_level_selection == False:
                 level.Main_screen(center_x, center_y, screen)
                 space_to_main = False
                 
             # 레벨 선택
-            if (event.key == pygame.K_SPACE) & (space_to_main == False):
+            if event.key == pygame.K_SPACE and space_to_main == False:
                 level.Level_selection(screen)
-                button_sound.play()
+                sound_Button.play()
                 space_to_main = True
                 esc_to_level_selection = False
         
             # 게임 오버
-            if(event.key == pygame.K_ESCAPE) & (space_to_main == True) & (esc_to_level_selection == True):
+            if event.key == pygame.K_ESCAPE and space_to_main == True and esc_to_level_selection == True:
                 level.Gameover_screen(center_x, center_y, screen)
-                gameover_sound.play()
+                sound_Gameover.play()
                 space_to_main = True
                 esc_to_level_selection = False
                 timer = False
 
             
-            if (space_to_main == True) & (esc_to_level_selection == False):
+            if space_to_main == True and esc_to_level_selection == False:
                 # 레벨 1 ~ 4로 전환
                 if event.key == pygame.K_1 :
-                    button_sound.play()
+                    sound_Button.play()
                     level.Level_change(1, screen)
                     space_to_main = True
                     esc_to_level_selection = True

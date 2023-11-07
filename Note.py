@@ -4,7 +4,7 @@ import math
 #from NoteManager import NoteManager
 
 class Note: # 충돌판정 여기서 
-    def __init__(self, shaper: Shaper , screen: pygame.display, noteSpeed: float=3):
+    def __init__(self, shaper: Shaper , screen: pygame.display, noteSpeed: float=8):
         self.areaNum = -1
         self.vertex = [[0,0] for i in range(4)]
         self.noteSpeed = noteSpeed
@@ -114,14 +114,17 @@ class Note: # 충돌판정 여기서
             if math.dist(self.vertex[2], self.shaper.centerPoint) <= 1:
                 self.NoteStandby()
                 print("RESET")
-                
             
             pygame.draw.polygon(screen,(255,255,255), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
             
-    def DeployNote(self, borderCoords, screen: pygame.display, deltaTime):
+    def DeployNote(self, borderCoords, screen: pygame.display, deltaTime, playerPos: list):
         if not self.IsNoteStandby(deltaTime):
             self.MakeNote(borderCoords, screen)
             self.MoveNote(borderCoords, screen)
+            if self.IsPlayerHit(playerPos):
+                print("LOLOLOLOLOLOLLOLL")
+            if self.NoteHitShaper():
+                self.NoteStandby()
         
     def IsNoteStandby(self, deltaTime):
         if self.areaNum == -1 or self.areaNum == 0:
@@ -195,7 +198,7 @@ class Note: # 충돌판정 여기서
     def NoteHitShaper(self):
         shaperLine = math.dist(self.shaper.points[0], self.shaper.points[1])
         if int(shaperLine) >= int(math.dist(self.vertex[2], self.vertex[3])):
-            print("OK")
+            print("OVEROVEROVERESRSER")
             self.NoteStandby()
             return True
         else:

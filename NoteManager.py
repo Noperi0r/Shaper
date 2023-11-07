@@ -65,9 +65,9 @@ class NoteManager():
                     note.ReadyNote(patternInfo[0], patternInfo[1]) # Isnotestandby는 false. > Releasenote 언제하지?
                     break 
                 
-    def DeployPattern(self, borderCoords, screen, deltaTime):
+    def DeployPattern(self, borderCoords, screen, deltaTime, playerPos: list):
         for note in self.noteLists:
-            note.DeployNote(borderCoords, screen, deltaTime)
+            note.DeployNote(borderCoords, screen, deltaTime, playerPos)
         
     def ManagerOnTask(self):
         for note in self.noteLists:
