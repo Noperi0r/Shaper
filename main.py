@@ -74,7 +74,6 @@ def GetDeltaTime(prevTime):
     return deltaTime
 
 def Stage1Loop():
-    screen.fill((0,0,0))
     shaper.MakeNPoints(screen, 4)
     
     borderCoords = shaper.DiscernNoteArea(screen, 900)
@@ -93,7 +92,6 @@ def Stage1Loop():
     
 
 def Stage2Loop():
-    screen.fill((0,255,100))
     shaper.MakeNPoints(screen, 6)
     
     borderCoords = shaper.DiscernNoteArea(screen, 900)
@@ -113,7 +111,6 @@ def Stage2Loop():
 
 
 def Stage3Loop():
-    screen.fill((0,255,100))
     shaper.MakeNPoints(screen, 14)
     
     borderCoords = shaper.DiscernNoteArea(screen, 900)
@@ -150,8 +147,9 @@ while running:
     #screen.fill(background_color)
     #GetDeltaTime(prevTime)
         
-    if level.isStage1:   
-        Stage1Loop()
+    if level.isStage1:
+        screen.fill((0,0,0))   
+        
         isTimerOn = True
         # 타이머 출력
         if isTimerOn:
@@ -159,18 +157,21 @@ while running:
             seconds = level.Update_timer(seconds, deltaTime)
         if seconds == deltaTime:
             sound_Stage1.play()
+        Stage1Loop()
 
     elif level.isStage2: 
-        Stage2Loop()
+        screen.fill((0,0,0))   
+        
         isTimerOn = True
         # 타이머 출력
         if isTimerOn:
             seconds = level.Update_timer(seconds, deltaTime)
         if seconds == deltaTime:
             sound_Stage2.play()
+        Stage2Loop()
 
     elif level.isStage3:
-        Stage3Loop()
+        screen.fill((0,0,0))   
         isTimerOn = True
         # 타이머 출력
         if isTimerOn:
@@ -178,6 +179,7 @@ while running:
         if seconds == deltaTime:
             sound_Stage3.play()
             print('stage3')
+        Stage3Loop()
     # elif level.isStage4:
     #     borderCoords =  shaper.DiscernNoteArea(screen, 300)
     #     GetDeltaTime()

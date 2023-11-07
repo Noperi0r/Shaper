@@ -15,7 +15,6 @@ class LevelManager():
         self.isStage4 = False
 
     def Update_timer(self, seconds, deltaTime):
-        self.screen.fill((0,0,0))
         # seconds += clock.get_time() / 1000
         seconds += deltaTime
         font = pygame.font.Font(None, 36)
