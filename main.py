@@ -42,8 +42,19 @@ space_to_main = False
 esc_to_level_selection = False
 
 # Sound-----------------------
+sound_Stage1 = pygame.mixer.Sound('./sound/music/stage1.mp3')
+sound_Stage2 = pygame.mixer.Sound('./sound/music/stage2.mp3')
+sound_Stage3 = pygame.mixer.Sound('./sound/music/stage3.mp3')
 sound_Button = pygame.mixer.Sound('./sound/effect/menu_sound1.mp3')
 sound_Gameover = pygame.mixer.Sound('./sound/effect/game_over.wav')
+
+# 버퍼 설정(사운드 지연 방지)
+#pygame.mixer.pre_init(44100,-16,2,2048)
+sound_Stage1.set_volume(0.2)
+sound_Stage2.set_volume(0.2)
+sound_Stage3.set_volume(0.2)
+sound_Button.set_volume(0.1)
+sound_Gameover.set_volume(1.0)
 #-----------------------------
 
 # Timer and Frame-------------
@@ -78,7 +89,8 @@ def Stage1Loop():
     player.DrawPlayer(screen)    
     
     shaper.MakeShapeLines(screen)
-   
+    
+
 def Stage2Loop():
     screen.fill((0,255,100))
     shaper.MakeNPoints(screen, 6)
@@ -94,7 +106,8 @@ def Stage2Loop():
     player.DrawPlayer(screen)    
     
     shaper.MakeShapeLines(screen)
-    
+
+
 def Stage3Loop():
     screen.fill((0,255,100))
     shaper.MakeNPoints(screen, 14)
@@ -127,7 +140,10 @@ while running:
         if isTimerOn:
             #print(deltaTime)
             seconds = level.Update_timer(seconds, deltaTime)
-        
+            print(seconds)
+        if seconds == deltaTime:
+            sound_Stage1.play()
+
     elif level.isStage2: 
         borderCoords = shaper.DiscernNoteArea(screen, 900)
         Stage2Loop()
@@ -136,7 +152,9 @@ while running:
         if isTimerOn:
             #print(deltaTime)
             seconds = level.Update_timer(seconds, deltaTime)
-        
+        if seconds == deltaTime:
+            sound_Stage2.play()
+
     elif level.isStage3:
         borderCoords = shaper.DiscernNoteArea(screen, 900)
         Stage3Loop()
@@ -145,7 +163,9 @@ while running:
         if isTimerOn:
             #print(deltaTime)
             seconds = level.Update_timer(seconds, deltaTime)
-                
+        if seconds == deltaTime:
+            sound_Stage3.play()
+            print('stage3')
     # elif level.isStage4:
     #     borderCoords =  shaper.DiscernNoteArea(screen, 300)
     #     GetDeltaTime()
@@ -159,6 +179,9 @@ while running:
             # 메인화면
             if event.key == pygame.K_ESCAPE and space_to_main == True and esc_to_level_selection == False:
                 level.Main_screen(center_x, center_y, screen)
+                sound_Stage1.stop()
+                sound_Stage2.stop()
+                sound_Stage3.stop()
                 space_to_main = False
                 
             # 메인 > 레벨 전환 조건문
