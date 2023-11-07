@@ -20,7 +20,7 @@ class Player():
     def RemovePlayer(self):
         self.playerPos = [0,0]
 
-    def DrawPlayer(self, surface: pygame.display ):
+    def DrawPlayer(self, surface: pygame.display):
         pygame.draw.circle(surface, (255,255,255), self.playerPos, 10)
 
     def GetPlayerRoutePoints(self): # !!. 비율 안 맞긴 함
@@ -110,7 +110,6 @@ class Player():
             self.playerPos[1] = self.shaper.centerPoint[1] + playerVector[0] * math.sin(-radAngle) + playerVector[1] * math.cos(-radAngle)
             #newPos = curPos.rotate_rad(-radAngle)           
         #self.playerPos = [newPos.x, newPos.y]                                                          
-        print(self.shaper.centerPoint)                                                                               
     def GetPlayerPos(self):
         return self.playerPos
     

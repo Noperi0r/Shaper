@@ -50,13 +50,14 @@ sound_Gameover = pygame.mixer.Sound('./sound/effect/game_over.wav')
 FPS = 60
 isTimerOn = False
 seconds = 0
-deltaTime=0
+deltaTime= 1 / FPS
 clock = pygame.time.Clock()
 prevTime = time.time() 
 #-----------------------------
 
 def GetDeltaTime(prevTime):
     currentTime = time.time()
+    #deltaTime = (currentTime - prevTime) % (1 / FPS)
     deltaTime = currentTime - prevTime
     prevTime = currentTime 
     return deltaTime
@@ -66,9 +67,10 @@ def Stage1Loop():
     shaper.MakeNPoints(screen, 4)
     
     borderCoords = shaper.DiscernNoteArea(screen, 900)
-
+    print(deltaTime)
     noteManager.PatternReady() # 수정 필요
     noteManager.DeployPattern(borderCoords, screen, deltaTime, player.GetPlayerPos())
+    #print(deltaTime)
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
@@ -78,8 +80,7 @@ def Stage1Loop():
     shaper.MakeShapeLines(screen)
    
 def Stage2Loop():
-    screen.fill((100,255,100))
-    
+    screen.fill((0,255,100))
     shaper.MakeNPoints(screen, 6)
     
     borderCoords = shaper.DiscernNoteArea(screen, 900)
@@ -93,14 +94,29 @@ def Stage2Loop():
     player.DrawPlayer(screen)    
     
     shaper.MakeShapeLines(screen)
-# def Stage3Loop():
+    
+def Stage3Loop():
+    screen.fill((0,255,100))
+    shaper.MakeNPoints(screen, 14)
+    
+    borderCoords = shaper.DiscernNoteArea(screen, 900)
+
+    noteManager.PatternReady() # 수정 필요
+    noteManager.DeployPattern(borderCoords, screen, deltaTime, player.GetPlayerPos())
+    
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
+            player.AngleMove(keys)
+    player.DrawPlayer(screen)    
+    
+    shaper.MakeShapeLines(screen)
 # def Stage4Loop():
 
 # 메인 루프
 running = True
 while running:
     #screen.fill(background_color)
-    GetDeltaTime(prevTime)
+    #GetDeltaTime(prevTime)
     
     # 타이머 출력
     if isTimerOn:
@@ -111,11 +127,11 @@ while running:
         
     elif level.isStage2: 
         borderCoords = shaper.DiscernNoteArea(screen, 900)
-        #Stage2Loop()
+        Stage2Loop()
         
     elif level.isStage3:
         borderCoords = shaper.DiscernNoteArea(screen, 900)
-        #Stage3Loop()
+        Stage3Loop()
                 
     # elif level.isStage4:
     #     borderCoords =  shaper.DiscernNoteArea(screen, 300)
@@ -167,6 +183,8 @@ while running:
                     isTimerOn = True
                     
                     noteManager.LoadManager(2)
+                    noteManager.LoadPatternList()
+
                     
                 elif event.key == pygame.K_3: # 스테이지 3 
                     level.Level_change(3, screen) 
@@ -174,8 +192,8 @@ while running:
                     esc_to_level_selection = True
                     isTimerOn = True  
                     
-                    noteManager.LoadManager(3)        
-                              
+                    noteManager.LoadManager(3)   
+                    noteManager.LoadPatternList()
                 # elif event.key == pygame.K_4:
                 #     level.Level_change(4, screen)
                 #     space_to_main = True

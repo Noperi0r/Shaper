@@ -115,14 +115,18 @@ class Note: # 충돌판정 여기서
                 self.NoteStandby()
                 print("RESET")
             
-            pygame.draw.polygon(screen,(255,255,255), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
+            return pygame.draw.polygon(screen,(255,255,255), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
             
     def DeployNote(self, borderCoords, screen: pygame.display, deltaTime, playerPos: list):
         if not self.IsNoteStandby(deltaTime):
             self.MakeNote(borderCoords, screen)
-            self.MoveNote(borderCoords, screen)
-            if self.IsPlayerHit(playerPos):
-                print("LOLOLOLOLOLOLLOLL")
+            if self.MoveNote(borderCoords, screen).collidepoint(pygame.math.Vector2(playerPos[0], playerPos[1])):
+            # if self.IsPlayerHit(playerPos):
+                pygame.draw.polygon(screen,(255,0,0), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
+                pygame.draw.circle(screen ,(255,0,255), self.vertex[0], 10)
+                pygame.draw.circle(screen ,(255,0,255), self.vertex[1], 10)
+                pygame.draw.circle(screen ,(255,0,255), self.vertex[2], 10)
+                pygame.draw.circle(screen ,(255,0,255), self.vertex[3], 10)
             if self.NoteHitShaper():
                 self.NoteStandby()
         
@@ -166,6 +170,7 @@ class Note: # 충돌판정 여기서
         playerVec1Angle = math.atan2(dy1, dx1)
         playerVec2Angle = math.atan2(dy2, dx2)
         
+    
         playerVec1ProjDist = math.dist(self.vertex[2], playerPos) * math.cos(playerVec1Angle)    
         playerVec2ProjDist = math.dist(self.vertex[3], playerPos) * math.cos(playerVec2Angle)
         
