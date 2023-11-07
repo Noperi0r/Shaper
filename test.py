@@ -23,7 +23,7 @@ pygame.display.set_caption("Pygame 화면")
 # 화면 색상 설정 (RGB 값)
 background_color = (0, 0, 0)
 
-nPolygonNum = 8
+nPolygonNum = 4
 hexagon = Shaper([400, 300], 15)
 hexagon.MakeNPoints(screen, nPolygonNum)
 
@@ -86,7 +86,7 @@ while running:
         
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
-            player.Move(keys)
+            player.AngleMove(keys)
     player.DrawPlayer(screen)    
     
     hexagon.MakeShapeLines(screen)
