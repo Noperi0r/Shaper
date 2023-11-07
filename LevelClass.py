@@ -15,10 +15,9 @@ class LevelManager():
         self.isStage4 = False
 
     def Update_timer(self, seconds, deltaTime):
+        self.screen.fill((0,0,0))
         # seconds += clock.get_time() / 1000
         seconds += deltaTime
-        print(seconds)
-        #print('deltaTime:{}, Seconds:{}', deltaTime, seconds)
         font = pygame.font.Font(None, 36)
         text = font.render(f" Score : {round(seconds, 2)}", True, (0, 255, 0))
         self.screen.blit(text, (600, 20))
