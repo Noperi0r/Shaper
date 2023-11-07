@@ -4,6 +4,7 @@ from Shape import Shaper
 from Player import Player
 from Note import Note
 from NoteManager import NoteManager
+import time
 
 # Pygame 초기화
 pygame.init()
@@ -22,8 +23,9 @@ pygame.display.set_caption("Pygame 화면")
 # 화면 색상 설정 (RGB 값)
 background_color = (0, 0, 0)
 
-hexagon = Shaper([400, 300])
-hexagon.MakeNPoints(screen, 6)
+nPolygonNum = 12
+hexagon = Shaper([400, 300], nPolygonNum)
+hexagon.MakeNPoints(screen, nPolygonNum)
 
 
 noteManager = NoteManager()
@@ -31,22 +33,29 @@ noteManager.LoadManager(1)
 
 player = Player(hexagon)
 
-noteTest = Note(hexagon, screen, noteManager,6)  
-noteTest2 = Note(hexagon, screen, noteManager)  
-noteTest3= Note(hexagon, screen, noteManager)  
-noteTest4= Note(hexagon, screen, noteManager)  
-noteTest5= Note(hexagon, screen, noteManager)  
+for i in range(50):
+    noteManager.LoadNotes(Note(hexagon, screen))
+    
+# noteTest = Note(hexagon, screen, noteManager)  
+# noteTest2 = Note(hexagon, screen, noteManager)  
+# noteTest3= Note(hexagon, screen, noteManager)  
+# noteTest4= Note(hexagon, screen, noteManager)  
+# noteTest5= Note(hexagon, screen, noteManager)  
 
 noteManager.LoadPatternList()
-
-borderCoords = [] 
 
 # 게임 루프
 running = True
 
 test = 0
-isPause = False
+prevTime = time.time()
+
+angle = 10
 while running:
+    currentTime = time.time()
+    deltaTime = currentTime - prevTime
+    prevTime = currentTime
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False    
@@ -55,29 +64,32 @@ while running:
     screen.fill(background_color)
 
     # 여기에 게임 객체 또는 렌더링 코드를 추가할 수 있습니다.
-    hexagon.MakeNPoints(screen, 6)
-    hexagon.MakeShapeLines(screen)
+    hexagon.MakeNPoints(screen, nPolygonNum)
     borderCoords = hexagon.DiscernNoteArea(screen, 300) # ★ 외부에서 실행되서 좌표 받아와야 함
-
+    
     # if(noteTest.IsNoteStandby()):
     #     test = (test + 1) % 20
     #     print(test)
     #     noteTest.ReadyNote(test)
-    # noteTest.ReleaseNote(borderCoords, screen)
+    # noteTest.ReadyNote(5)
+    # noteTest2.ReadyNote(6)
+    
+    # noteTest.DeployNote(borderCoords, screen)
+    # noteTest2.DeployNote(borderCoords, screen)
     
     # if noteTest.IsPlayerHit(player.GetPlayerPos()):
-    #     print("HIT")
+    #     print("HIT")e
     #     noteTest.NoteStandby()        
     
     noteManager.PatternReady()
-    noteManager.ReleasePattern(borderCoords, screen)
+    noteManager.DeployPattern(borderCoords, screen, deltaTime)
         
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
             player.Move(keys)
     player.DrawPlayer(screen)    
     
-    
+    hexagon.MakeShapeLines(screen)
     # 화면 업데이트
     pygame.display.update()
     clock.tick(FPS)

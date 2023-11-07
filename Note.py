@@ -1,10 +1,10 @@
 import pygame
 from Shape import Shaper
 import math
-from NoteManager import NoteManager
+#from NoteManager import NoteManager
 
 class Note: # 충돌판정 여기서 
-    def __init__(self, shaper: Shaper , screen: pygame.display, noteManager: NoteManager ,noteSpeed: int = 1):
+    def __init__(self, shaper: Shaper , screen: pygame.display, noteSpeed: float=3):
         self.areaNum = -1
         self.vertex = [[0,0] for i in range(4)]
         self.noteSpeed = noteSpeed
@@ -12,7 +12,8 @@ class Note: # 충돌판정 여기서
         self.shaper = shaper
         self.screen = screen
         self.isSpawned = False
-        noteManager.LoadNotes(self)
+        #noteManager.LoadNotes(self)
+        self.spawnTime = -1
         
     def GetAreaNum(self):
         return self.areaNum
@@ -32,16 +33,28 @@ class Note: # 충돌판정 여기서
             borderVectors[0][1] = self.shaper.centerPoint[1] - borderCoords[0][1]
             borderVectors[1][0] = self.shaper.centerPoint[0] - borderCoords[self.areaNum-1][0]
             borderVectors[1][1] = self.shaper.centerPoint[1] - borderCoords[self.areaNum-1][1]
+            
         else:
             borderVectors[0][0] = self.shaper.centerPoint[0] - borderCoords[self.areaNum-1][0]
             borderVectors[0][1] = self.shaper.centerPoint[1] - borderCoords[self.areaNum-1][1]
             borderVectors[1][0] = self.shaper.centerPoint[0] - borderCoords[self.areaNum][0]
             borderVectors[1][1] = self.shaper.centerPoint[1] - borderCoords[self.areaNum][1] 
+            # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum-1][0]))
+            # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum-1][1]))
+            # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum][0]))
+            # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum][1]))
             
-        borderVectors[0][0] /= math.dist(self.shaper.centerPoint, borderCoords[0])
-        borderVectors[0][1] /= math.dist(self.shaper.centerPoint, borderCoords[0])
-        borderVectors[1][0] /= math.dist(self.shaper.centerPoint, borderCoords[0])
-        borderVectors[1][1] /= math.dist(self.shaper.centerPoint, borderCoords[0])
+            # 이상 무 
+            
+        #print(math.dist(self.shaper.centerPoint, borderCoords[self.areaNum-1])) # 이상 무 
+        borderVectors[0][0] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # x
+        borderVectors[0][1] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # y
+        borderVectors[1][0] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # x
+        borderVectors[1][1] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # y
+                
+        #print(str(self.areaNum) + " " + str(borderVectors))
+        # 이상 무 
+
         return borderVectors
     
     def GetAreaBorderPoints(self, borderCoords): # n개 borderCoord에서 
@@ -74,25 +87,19 @@ class Note: # 충돌판정 여기서
             
             pygame.draw.polygon(screen,(255,255,255), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
            
-            pygame.draw.circle(screen ,(255,0,255), self.vertex[0], 10)
-            pygame.draw.circle(screen ,(255,0,255), self.vertex[1], 10)
-            pygame.draw.circle(screen ,(255,0,255), self.vertex[2], 10)
-            pygame.draw.circle(screen ,(255,0,255), self.vertex[3], 10)
+            # pygame.draw.circle(screen ,(255,0,255), self.vertex[0], 10)
+            # pygame.draw.circle(screen ,(255,0,255), self.vertex[1], 10)
+            # pygame.draw.circle(screen ,(255,0,255), self.vertex[2], 10)
+            # pygame.draw.circle(screen ,(255,0,255), self.vertex[3], 10)
             
             self.isSpawned = True
             return self.vertex
 
     
     # 노트 각각에 대해서 작동. self.noteSpeed에 따라 네 점의 좌표 변화
-    # 예외처리 > center좌표 도달하면 네 점 각각 모두 경우 체크하고 포지션 center로 고정.
+    # 예외처리 > center좌표 도달하면 네 점 각각 모두 경우 체크.
     def MoveNote(self, borderCoords, screen: pygame.display): # 매 프레임마다 실행       
         if self.isSpawned:
-            for vertex in self.vertex:
-                if self.areaNum == 2:
-                    pygame.draw.circle(screen, (255,0,255), vertex, 10)
-                elif self.areaNum == 3:
-                    pygame.draw.circle(screen, (0,0,255), vertex, 10)
-                
             noteVectors = self.GetAreaBorderVectors(borderCoords) # 두 벡터 저장하는 2차원 배열
             
             for i in range(4):
@@ -103,31 +110,37 @@ class Note: # 충돌판정 여기서
                 else: # 1번, 3번 인덱스
                     self.vertex[i][0] += self.noteSpeed * noteVectors[1][0]
                     self.vertex[i][1] += self.noteSpeed * noteVectors[1][1]
-                    
-
+            
             if math.dist(self.vertex[2], self.shaper.centerPoint) <= 1:
                 self.NoteStandby()
                 print("RESET")
+                
+            
             pygame.draw.polygon(screen,(255,255,255), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
-
-    def ReleaseNote(self, borderCoords, screen: pygame.display):
-        if not self.IsNoteStandby():
+            
+    def DeployNote(self, borderCoords, screen: pygame.display, deltaTime):
+        if not self.IsNoteStandby(deltaTime):
             self.MakeNote(borderCoords, screen)
             self.MoveNote(borderCoords, screen)
         
-    def IsNoteStandby(self):
+    def IsNoteStandby(self, deltaTime):
         if self.areaNum == -1 or self.areaNum == 0:
             return True
         else:
-            return False
+            if self.spawnTime > 0:
+                self.spawnTime -= deltaTime # spawnTime은 readyNote에서 설정
+                return True
+            else:
+                return False
 
     def NoteStandby(self):
         self.areaNum = -1
         self.isSpawned = False
         self.vertex = [[0,0] for i in range(4)]
         
-    def ReadyNote(self, areaNum):
+    def ReadyNote(self, areaNum, spawnTime):
         self.areaNum = areaNum
+        self.spawnTime = spawnTime
         
     def IsPlayerInArea(self, playerPos):
         notePlaneVec = [0,0]
@@ -149,7 +162,6 @@ class Note: # 충돌판정 여기서
         
         playerVec1Angle = math.atan2(dy1, dx1)
         playerVec2Angle = math.atan2(dy2, dx2)
-        print(playerVec1Angle)
         
         playerVec1ProjDist = math.dist(self.vertex[2], playerPos) * math.cos(playerVec1Angle)    
         playerVec2ProjDist = math.dist(self.vertex[3], playerPos) * math.cos(playerVec2Angle)

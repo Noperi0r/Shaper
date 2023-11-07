@@ -7,9 +7,8 @@ class Player():
     # Init 순서는 Shaper가 먼저 이루어져야 함 
     def __init__(self, shaper: Shaper): 
         self.shaper = shaper # 상속 말고, 변수로 Shape 가져야 함.
-        self.speed = 8
-        self.playerRadius = shaper.radius + 10 
-        self.playerPos = [shaper.centerPoint[0], shaper.centerPoint[1] + self.playerRadius]
+        self.speed = 10
+        self.playerRadius = shaper.radius + 50
         self.playerPos = [self.shaper.playerRoutePoint[1][0], self.shaper.playerRoutePoint[1][1]]
         #self.shapeLength = math.dist(shaper.points[0], shaper.points[1]) 
 
@@ -24,32 +23,32 @@ class Player():
         availablePoints = [] 
         routeLength = math.dist(routePoints[0], routePoints[1])
         for i in range(self.shaper.n):
-            #print(str(i) + ": " + str(self.GetPlayerRoutePoints()[i])) # DEBUG
-
             if  math.dist(routePoints[i], self.playerPos) <= routeLength and len(availablePoints) < 2: # !! = 고려 필요? 
                 availablePoints.append(routePoints[i]) # 0부터 n-1까지 loop 순서대로 가므로, 추가되는 것은 작은 index 순.
             elif math.dist(routePoints[i], self.playerPos) > routeLength and len(availablePoints) >= 2: # 예외처리 TESTESTESTESTESTESTSET
                  if routePoints[i] in availablePoints:
-                     availablePoints.pop(routePoints[i])
-                     
+                    availablePoints.remove(routePoints[i])
+
+        
         if len(availablePoints) == 2:
             # if self.GetPlayerRoutePoints()[self.shaper.n-1] in availablePoints and self.GetPlayerRoutePoints()[0] in availablePoints : # 마지막 선분 영역에 대한 예외 처리 
             #     print(self.GetPlayerRoutePoints()[self.shaper.n-1])
             #     #availablePoints = [availablePoints[1], availablePoints[0]] 
             #     print(availablePoints) # DEBUG
+            if availablePoints[0] == routePoints[0] and availablePoints[1] == routePoints[self.shaper.n-1]: # ex. 0 5 순서 저장인 경우 예외처리 by swapping
+                availablePoints = [availablePoints[1], availablePoints[0]]
             return availablePoints
-
-        if len(availablePoints) == 1:
-            idx = -1
+        
+        elif len(availablePoints) == 1:
             for i in range(len(routePoints)):
-                if routePoints[i] in availablePoints:
+                if routePoints[i] in availablePoints: 
                     print("OK, Let us get it: " + str(i) + "/ " + str(availablePoints))
                     idx = i
                     break     
-
             if keys[pygame.K_RIGHT]: # 5 >> 0 경우 예외 
                 if idx == (self.shaper.n-1):
-                    availablePoints.append(routePoints[idx])     
+                    availablePoints.append(routePoints[0])
+                    #availablePoints = [availablePoints[1], availablePoints[0]] # 0 5
                 else:
                     availablePoints.append(routePoints[idx+1])
                 self.playerPos = availablePoints[0]
@@ -60,31 +59,14 @@ class Player():
                     availablePoints.append(routePoints[idx-1])
                 availablePoints = [availablePoints[1], availablePoints[0]]
                 self.playerPos = availablePoints[1] 
-            return availablePoints
-            
-        if len(availablePoints) != 2: 
-            #print(str(availablePoints[0]) + " / " + str())
+            return availablePoints  
+        elif len(availablePoints) != 2: 
             print("RouteNumber Error: length = " + str(len(availablePoints)))
             return availablePoints
-        
-            
-    def GetRouteSlope(self, routePoints: list):  
-        # routePoints는 GetNearRoutePoints 반환값이어야 함.
-        if len(routePoints) == 2:
-            #nearRoutePoints = self.GetNearRoutePoints() # 세로 직선인 경우 처리 필요. 가로 직선인 경우 처리 필요
-            if (routePoints[1][1] - routePoints[0][1]) == 0 or (routePoints[1][0] - routePoints[0][0]) == 0: # 가로 직선 
-                return 0 # 값 뭐 줘야하지? 기본값? 
-            else:
-                return abs((routePoints[1][1] - routePoints[0][1]) / (routePoints[1][0] - routePoints[0][0]))
-        else:
-            print("Near points number Error")
-
             
     def Move(self, keys):
         # Precondition: 클래스 외부에서 L arrow, R arrow에 대한 입력에 대해서만 해당 함수 실행         
         nearRoutePoints = self.GetNearRoutePoints(keys)
-        #routeLinearFuncY = self.MakeLinearFunc(nearRoutePoints)        
-
         dirVector = [0,0]
         if keys[pygame.K_RIGHT]: # clockwise             
             dirVector[0] = nearRoutePoints[1][0] - nearRoutePoints[0][0] # default: 시계방향
@@ -94,12 +76,11 @@ class Player():
             dirVector[1] = nearRoutePoints[0][1] - nearRoutePoints[1][1] 
 
         if math.dist(nearRoutePoints[1], nearRoutePoints[0]) == 0:
-                print(self.shaper.playerRoutePoint[0])
-                print(nearRoutePoints[1], nearRoutePoints[0])
+            print(nearRoutePoints[1], nearRoutePoints[0])
+            pass    
                 
         dirVector[0] /= math.dist(nearRoutePoints[1], nearRoutePoints[0]) # Normalize
         dirVector[1] /= math.dist(nearRoutePoints[1], nearRoutePoints[0]) 
-        
         
         self.playerPos[0] += self.speed * dirVector[0]
         self.playerPos[1] += self.speed * dirVector[1]
