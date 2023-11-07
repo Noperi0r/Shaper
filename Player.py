@@ -11,11 +11,13 @@ class Player():
         self.playerRadius = shaper.radius + 10
         self.playerPos = [self.shaper.playerRoutePoint[1][0], self.shaper.playerRoutePoint[1][1]]
         #self.shapeLength = math.dist(shaper.points[0], shaper.points[1]) 
-        self.angleSpeed = 10
+        self.angleSpeed = 7
+        self.playerDead = False
 
-    def LoadPlayer(self, speed):
-        self.speed = speed
+    def LoadPlayer(self, angleSpeed:int = 7):
+        self.angleSpeed = angleSpeed
         self.playerPos = [self.shaper.playerRoutePoint[1][0], self.shaper.playerRoutePoint[1][1]]
+        self.playerDead = False
 
     def RemovePlayer(self):
         self.playerPos = [0,0]
@@ -84,7 +86,7 @@ class Player():
 
         if math.dist(nearRoutePoints[1], nearRoutePoints[0]) == 0:
             print(nearRoutePoints[1], nearRoutePoints[0])
-            pass    
+            return    
                 
         dirVector[0] /= math.dist(nearRoutePoints[1], nearRoutePoints[0]) # Normalize
         dirVector[1] /= math.dist(nearRoutePoints[1], nearRoutePoints[0]) 
@@ -110,6 +112,7 @@ class Player():
             self.playerPos[1] = self.shaper.centerPoint[1] + playerVector[0] * math.sin(-radAngle) + playerVector[1] * math.cos(-radAngle)
             #newPos = curPos.rotate_rad(-radAngle)           
         #self.playerPos = [newPos.x, newPos.y]                                                          
+    
     def GetPlayerPos(self):
         return self.playerPos
     

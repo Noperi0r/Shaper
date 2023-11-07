@@ -6,16 +6,18 @@ import sys
 
 
 class LevelManager():
-    isStage1 = False
-    isStage2 = False
-    isStage3 = False
-    isStage4 = False
+
     def __init__(self, screen:pygame):
         self.screen = screen
+        self.isStage1 = False
+        self.isStage2 = False
+        self.isStage3 = False
+        self.isStage4 = False
 
     def Update_timer(self, seconds, deltaTime):
         # seconds += clock.get_time() / 1000
         seconds += deltaTime
+        print(seconds)
         #print('deltaTime:{}, Seconds:{}', deltaTime, seconds)
         font = pygame.font.Font(None, 36)
         text = font.render(f" Score : {round(seconds, 2)}", True, (0, 255, 0))

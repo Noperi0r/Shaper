@@ -39,21 +39,11 @@ class Note: # 충돌판정 여기서
             borderVectors[0][1] = self.shaper.centerPoint[1] - borderCoords[self.areaNum-1][1]
             borderVectors[1][0] = self.shaper.centerPoint[0] - borderCoords[self.areaNum][0]
             borderVectors[1][1] = self.shaper.centerPoint[1] - borderCoords[self.areaNum][1] 
-            # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum-1][0]))
-            # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum-1][1]))
-            # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum][0]))
-            # print(str(self.areaNum)  + " " + str(self.shaper.centerPoint[0] - borderCoords[self.areaNum][1]))
             
-            # 동일
-            
-        #print(math.dist(self.shaper.centerPoint, borderCoords[self.areaNum-1])) # 이상 무 
         borderVectors[0][0] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # x
         borderVectors[0][1] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # y
         borderVectors[1][0] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # x
         borderVectors[1][1] /= math.dist(self.shaper.centerPoint, borderCoords[0]) # y
-                
-        #print(str(self.areaNum) + " " + str(borderVectors))
-        # 이상 무 
 
         return borderVectors
     
@@ -117,16 +107,18 @@ class Note: # 충돌판정 여기서
             
             return pygame.draw.polygon(screen,(255,255,255), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
             
-    def DeployNote(self, borderCoords, screen: pygame.display, deltaTime, playerPos: list):
+    def DeployNote(self, borderCoords, screen: pygame.display, deltaTime, player):
         if not self.IsNoteStandby(deltaTime):
             self.MakeNote(borderCoords, screen)
-            if self.MoveNote(borderCoords, screen).collidepoint(pygame.math.Vector2(playerPos[0], playerPos[1])):
-            # if self.IsPlayerHit(playerPos):
+            self.MoveNote(borderCoords, screen)
+            #if self.MoveNote(borderCoords, screen).collidepoint(pygame.math.Vector2(playerPos[0], playerPos[1])):
+            if self.IsPlayerHit(player.playerPos):
+                player.playerDead = True
                 pygame.draw.polygon(screen,(255,0,0), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
-                pygame.draw.circle(screen ,(255,0,255), self.vertex[0], 10)
-                pygame.draw.circle(screen ,(255,0,255), self.vertex[1], 10)
-                pygame.draw.circle(screen ,(255,0,255), self.vertex[2], 10)
-                pygame.draw.circle(screen ,(255,0,255), self.vertex[3], 10)
+                # pygame.draw.circle(screen ,(255,0,255), self.vertex[0], 10)
+                # pygame.draw.circle(screen ,(255,0,255), self.vertex[1], 10)
+                # pygame.draw.circle(screen ,(255,0,255), self.vertex[2], 10)
+                # pygame.draw.circle(screen ,(255,0,255), self.vertex[3], 10)
             if self.NoteHitShaper():
                 self.NoteStandby()
         
@@ -187,19 +179,54 @@ class Note: # 충돌판정 여기서
         # # if denominator > 0:
         # #     distance /= denominator
         # if distance <= 5:
-        #     print("HITHITHITHITHITHITHIT")
+        #     print("HITHITHITHITHITHITHIT")                                                        
         #     self.NoteStandby()
         #     return True
         # distance = abs((x2 - x1) * (y1 - y) - (x1 - x) * (y2 - y1)) / math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        vertexXPos = [self.vertex[0][0], self.vertex[1][0], self.vertex[2][0], self.vertex[3][0]]
-        vertexYPos = [self.vertex[0][1], self.vertex[1][1], self.vertex[2][1], self.vertex[3][1]]
-        vertexMinX, vertexMaxX = min(vertexXPos), max(vertexXPos)
-        vertexMinY, vertexMaxY = min(vertexYPos), max(vertexYPos)
-        if (playerPos[0] >= vertexMinX and playerPos[0] <= vertexMaxX) and (playerPos[1] >= vertexMinY and playerPos[1] <= vertexMaxY):
+        
+        
+        # vertexXPos = [self.vertex[0][0], self.vertex[1][0], self.vertex[2][0], self.vertex[3][0]]
+        # vertexYPos = [self.vertex[0][1], self.vertex[1][1], self.vertex[2][1], self.vertex[3][1]]
+        # vertexMinX, vertexMaxX = min(vertexXPos), max(vertexXPos)
+        # vertexMinY, vertexMaxY = min(vertexYPos), max(vertexYPos)
+        # if (playerPos[0] >= vertexMinX and playerPos[0] <= vertexMaxX) and (playerPos[1] >= vertexMinY and playerPos[1] <= vertexMaxY):
+        #     return True
+        # else:
+        #     return False
+        
+        lineVector = [self.vertex[3][0]-self.vertex[2][0], self.vertex[3][1]-self.vertex[2][1]]
+        lineVecDist = math.dist(self.vertex[3], self.vertex[2])
+        
+        lineToPlyerVector = [playerPos[0]-self.vertex[2][0], playerPos[1]-self.vertex[2][1]]
+        linetoPlayDist = math.dist(playerPos, self.vertex[2])
+        
+        dotProduct = lineVector[0]*lineToPlyerVector[0] + lineVector[1]*lineToPlyerVector[1]
+    
+        #-----------------------
+        # lineVector2 = [self.vertex[1][0]-self.vertex[0][0], self.vertex[1][1]-self.vertex[0][1]]
+        # lineVecDist2 = math.dist(self.vertex[1], self.vertex[0])
+        
+        # lineToPlyerVector2 = [playerPos[0]-self.vertex[1][0], playerPos[1]-self.vertex[1][1]]
+        # linetoPlayDist2 = math.dist(playerPos, self.vertex[1])
+        
+        # dotProduct2 = lineVector2[0]*lineToPlyerVector2[0] + lineVector2[1]*lineToPlyerVector2[1]
+        
+        if lineVecDist == 0 or linetoPlayDist == 0:
+            return
+        # if lineVecDist2 == 0 or linetoPlayDist2 == 0:
+        #     return
+        
+        dotProduct /= (lineVecDist * linetoPlayDist) 
+        #dotProduct2 /= (lineVecDist2 * linetoPlayDist2)
+        angle = math.acos(dotProduct)
+        #angle2 = math.acos(dotProduct2)
+        
+        if angle <= 0.1 and angle >= -0.1:
+        #if angle2 <= 0.5 and angle >= -0.5:
             return True
         else:
             return False
-
+                                                                                                                                                                                                                                                                                                                               
     def NoteHitShaper(self):
         shaperLine = math.dist(self.shaper.points[0], self.shaper.points[1])
         if int(shaperLine) >= int(math.dist(self.vertex[2], self.vertex[3])):

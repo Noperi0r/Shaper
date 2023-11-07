@@ -11,8 +11,8 @@ import time
 pygame.init()
 
 # Set Screen confs-------------
-screen_width = 800
-screen_height = 600
+screen_width = 1024
+screen_height = 768
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 center_x = screen_width // 2
@@ -78,10 +78,8 @@ def Stage1Loop():
     shaper.MakeNPoints(screen, 4)
     
     borderCoords = shaper.DiscernNoteArea(screen, 900)
-    #print(deltaTime)
     noteManager.PatternReady() # 수정 필요
-    noteManager.DeployPattern(borderCoords, screen, deltaTime, player.GetPlayerPos())
-    #print(deltaTime)
+    noteManager.DeployPattern(borderCoords, screen, deltaTime, player)
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
@@ -89,6 +87,9 @@ def Stage1Loop():
     player.DrawPlayer(screen)    
     
     shaper.MakeShapeLines(screen)
+    
+    if player.playerDead:
+        PlayerDeadEvent(space_to_main, esc_to_level_selection, isTimerOn, seconds)
     
 
 def Stage2Loop():
@@ -106,6 +107,9 @@ def Stage2Loop():
     player.DrawPlayer(screen)    
     
     shaper.MakeShapeLines(screen)
+    
+    if player.playerDead:
+        PlayerDeadEvent(space_to_main, esc_to_level_selection, isTimerOn, seconds)
 
 
 def Stage3Loop():
@@ -123,15 +127,28 @@ def Stage3Loop():
     player.DrawPlayer(screen)    
     
     shaper.MakeShapeLines(screen)
+    
+    if player.playerDead:
+        PlayerDeadEvent(space_to_main, esc_to_level_selection, isTimerOn, seconds)
+    
 # def Stage4Loop():
+playerHitGameOver = False
+def PlayerDeadEvent(space_to_main, esc_to_level_selection, isTimerOn, seconds):
+    level.Gameover_screen(center_x, center_y, screen, seconds)
+    sound_Gameover.play()
+    space_to_main = True
+    esc_to_level_selection = True
+    isTimerOn = False
+    seconds = 0
+    player.playerDead = False
+    
+    playerHitGameOver = True
 
 # 메인 루프
 running = True
 while running:
     #screen.fill(background_color)
     #GetDeltaTime(prevTime)
-    
-
         
     if level.isStage1:   
         Stage1Loop()
@@ -140,28 +157,23 @@ while running:
         if isTimerOn:
             #print(deltaTime)
             seconds = level.Update_timer(seconds, deltaTime)
-            print(seconds)
         if seconds == deltaTime:
             sound_Stage1.play()
 
     elif level.isStage2: 
-        borderCoords = shaper.DiscernNoteArea(screen, 900)
         Stage2Loop()
         isTimerOn = True
         # 타이머 출력
         if isTimerOn:
-            #print(deltaTime)
             seconds = level.Update_timer(seconds, deltaTime)
         if seconds == deltaTime:
             sound_Stage2.play()
 
     elif level.isStage3:
-        borderCoords = shaper.DiscernNoteArea(screen, 900)
         Stage3Loop()
         isTimerOn = True
         # 타이머 출력
         if isTimerOn:
-            #print(deltaTime)
             seconds = level.Update_timer(seconds, deltaTime)
         if seconds == deltaTime:
             sound_Stage3.play()
@@ -170,7 +182,6 @@ while running:
     #     borderCoords =  shaper.DiscernNoteArea(screen, 300)
     #     GetDeltaTime()
     #     Stage4Loop()
-
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -186,6 +197,7 @@ while running:
                 
             # 메인 > 레벨 전환 조건문
             if event.key == pygame.K_SPACE and space_to_main == False:
+                #player.playerDead = False
                 level.Level_selection(screen)
                 sound_Button.play()
                 space_to_main = True
@@ -193,12 +205,19 @@ while running:
         
             # 게임 오버
             if event.key == pygame.K_ESCAPE and space_to_main == True and esc_to_level_selection == True:
-                level.Gameover_screen(center_x, center_y, screen, seconds)
-                sound_Gameover.play()
-                space_to_main = True
-                esc_to_level_selection = False
-                isTimerOn = False
-            
+                if not playerHitGameOver:
+                    screen.fill((0,0,0))
+                    level.Gameover_screen(center_x, center_y, screen, seconds)
+                    sound_Gameover.play()
+                    space_to_main = True
+                    esc_to_level_selection = False
+                    isTimerOn = False
+                    seconds = 0
+                    player.playerDead = False
+                    print(playerHitGameOver)
+                else:
+                    playerHitGameOver = False
+                    
             if space_to_main == True and esc_to_level_selection == False:
                 # 레벨 1 ~ 4로 전환
                 if event.key == pygame.K_1 : # 스테이지 1
@@ -208,19 +227,19 @@ while running:
                     esc_to_level_selection = True
                     isTimerOn = True
                     
+                    player.LoadPlayer()
                     noteManager.LoadManager(1)
                     noteManager.LoadPatternList()
 
-                    
                 elif event.key == pygame.K_2: # 스테이지 2
                     level.Level_change(2, screen)
                     space_to_main = True
                     esc_to_level_selection = True
                     isTimerOn = True
                     
+                    player.LoadPlayer()
                     noteManager.LoadManager(2)
                     noteManager.LoadPatternList()
-
                     
                 elif event.key == pygame.K_3: # 스테이지 3 
                     level.Level_change(3, screen) 
@@ -228,6 +247,7 @@ while running:
                     esc_to_level_selection = True
                     isTimerOn = True  
                     
+                    player.LoadPlayer()
                     noteManager.LoadManager(3)   
                     noteManager.LoadPatternList()
                 # elif event.key == pygame.K_4:
