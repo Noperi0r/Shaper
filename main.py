@@ -249,7 +249,7 @@ while running:
                     esc_to_level_selection = True
                     isTimerOn = True  
                     
-                    player.LoadPlayer()
+                    player.LoadPlayer(4)
                     noteManager.LoadManager(3)   
                     noteManager.LoadPatternList()
                 # elif event.key == pygame.K_4:

@@ -18,9 +18,15 @@ class NoteManager():
      
     def LoadManager(self, stage: int): # 노트 다 불러오고, 스테이지 시작시 실행
         self.stage = stage
+        self.patternList = []
         for note in self.noteLists:
             note.areaNum = -1
             note.NoteStandby()
+            note.GetStageNum(stage)
+            
+    def SetNotesVelocity(self, speed):
+        for note in self.noteLists:
+            note.noteSpeed = 3
         
     def LoadPatternList(self): # 패턴 파일 읽어서 리스트에 저장. 
         if self.stage == 0:
@@ -42,7 +48,6 @@ class NoteManager():
         patternNum = random.randrange(1,patternRange+1)
         patternFile += str(patternNum)
         print(patternFile)
-        print(self.noteLists)
         
         with open(patternFile, 'r') as file: # 제목 형식 아직 안 정함
             for line in file:
@@ -62,7 +67,6 @@ class NoteManager():
             patternInfo = [int(patternInfo[0]), float(patternInfo[1])]
             print(str(patternInfo))
             
-        
             # 몇 초뒤에 나오게 할건지에 대한 코드 추가 필요
             for note in self.noteLists:
                 if note.GetAreaNum() == -1:
@@ -70,6 +74,8 @@ class NoteManager():
                     # print(patternInfo[0]) # patterninfo OK
                     note.ReadyNote(patternInfo[0], patternInfo[1]) # Isnotestandby는 false. > Releasenote 언제하지?
                     break 
+        if len(self.patternList) == 0:
+            self.LoadPatternList()
                 
     def DeployPattern(self, borderCoords, screen, deltaTime, player):
         for note in self.noteLists:

@@ -2,6 +2,7 @@ import pygame
 from Shape import Shaper
 import math
 #from NoteManager import NoteManager
+from Player import Player
 
 class Note: # 충돌판정 여기서 
     def __init__(self, shaper: Shaper , screen: pygame.display, noteSpeed: float=8):
@@ -14,6 +15,8 @@ class Note: # 충돌판정 여기서
         self.isSpawned = False
         #noteManager.LoadNotes(self)
         self.spawnTime = -1
+        
+        self.stage = 0
         
     def GetAreaNum(self):
         return self.areaNum
@@ -107,18 +110,20 @@ class Note: # 충돌판정 여기서
             
             return pygame.draw.polygon(screen,(255,255,255), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
             
-    def DeployNote(self, borderCoords, screen: pygame.display, deltaTime, player):
+    def DeployNote(self, borderCoords, screen: pygame.display, deltaTime, player: Player):
         if not self.IsNoteStandby(deltaTime):
             self.MakeNote(borderCoords, screen)
             self.MoveNote(borderCoords, screen)
             #if self.MoveNote(borderCoords, screen).collidepoint(pygame.math.Vector2(playerPos[0], playerPos[1])):
-            if self.IsPlayerHit(player.playerPos):
-                player.playerDead = True
-                pygame.draw.polygon(screen,(255,0,0), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
-                # pygame.draw.circle(screen ,(255,0,255), self.vertex[0], 10)
-                # pygame.draw.circle(screen ,(255,0,255), self.vertex[1], 10)
-                # pygame.draw.circle(screen ,(255,0,255), self.vertex[2], 10)
-                # pygame.draw.circle(screen ,(255,0,255), self.vertex[3], 10)
+            if self.stage == 3:
+                if self.IsPlayerHitStage3(player.playerPos):   
+                    player.playerDead = True
+                    pygame.draw.polygon(screen,(255,0,0), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
+            else:
+                if self.IsPlayerHit(player.playerPos):
+                    player.playerDead = True
+                    pygame.draw.polygon(screen,(255,0,0), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
+
             if self.NoteHitShaper():
                 self.NoteStandby()
         
@@ -173,27 +178,7 @@ class Note: # 충돌판정 여기서
             
         
     def IsPlayerHit(self, playerPos):
-        # distance = abs((self.vertex[3][0] - self.vertex[2][0]) * (self.vertex[2][1] - playerPos[1]) - (self.vertex[2][0] - playerPos[0]) * (self.vertex[3][1] - self.vertex[2][1]))
-        # denominator = math.sqrt((self.vertex[3][0] - self.vertex[2][0]) ** 2 + (self.vertex[3][1] - self.vertex[2][1]) ** 2)
-        # distance /= denominator
-        # # if denominator > 0:
-        # #     distance /= denominator
-        # if distance <= 5:
-        #     print("HITHITHITHITHITHITHIT")                                                        
-        #     self.NoteStandby()
-        #     return True
-        # distance = abs((x2 - x1) * (y1 - y) - (x1 - x) * (y2 - y1)) / math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        
-        
-        # vertexXPos = [self.vertex[0][0], self.vertex[1][0], self.vertex[2][0], self.vertex[3][0]]
-        # vertexYPos = [self.vertex[0][1], self.vertex[1][1], self.vertex[2][1], self.vertex[3][1]]
-        # vertexMinX, vertexMaxX = min(vertexXPos), max(vertexXPos)
-        # vertexMinY, vertexMaxY = min(vertexYPos), max(vertexYPos)
-        # if (playerPos[0] >= vertexMinX and playerPos[0] <= vertexMaxX) and (playerPos[1] >= vertexMinY and playerPos[1] <= vertexMaxY):
-        #     return True
-        # else:
-        #     return False
-        
+
         lineVector = [self.vertex[3][0]-self.vertex[2][0], self.vertex[3][1]-self.vertex[2][1]]
         lineVecDist = math.dist(self.vertex[3], self.vertex[2])
         
@@ -226,18 +211,29 @@ class Note: # 충돌판정 여기서
             return True
         else:
             return False
-                                                                                                                                                                                                                                                                                                                               
-    def NoteHitShaper(self):
-        shaperLine = math.dist(self.shaper.points[0], self.shaper.points[1])
-        if int(shaperLine) >= int(math.dist(self.vertex[2], self.vertex[3])):
-            print("OVEROVEROVERESRSER")
-            self.NoteStandby()
+        
+    def IsPlayerHitStage3(self, playerPos):
+        vertexXPos = [self.vertex[0][0], self.vertex[1][0], self.vertex[2][0], self.vertex[3][0]]
+        vertexYPos = [self.vertex[0][1], self.vertex[1][1], self.vertex[2][1], self.vertex[3][1]]
+        vertexMinX, vertexMaxX = min(vertexXPos), max(vertexXPos)
+        vertexMinY, vertexMaxY = min(vertexYPos), max(vertexYPos)
+        if (playerPos[0] >= vertexMinX and playerPos[0] <= vertexMaxX) and (playerPos[1] >= vertexMinY and playerPos[1] <= vertexMaxY):
             return True
         else:
-            return False # 2가 작은 인덱스, 3이 큰 인덱스   
+            return False
+        
+    def NoteHitShaper(self):
+        #if self.GetStageNum() == 3:
+            shaperLine = math.dist(self.shaper.points[0], self.shaper.points[1])
+            if int(shaperLine) >= int(math.dist(self.vertex[2], self.vertex[3])):
+                self.NoteStandby()
+                return True
+            else:
+                return False # 2가 작은 인덱스, 3이 큰 인덱스   
 
-    # -----Called by LevelManager-----
-    #def LoadNote(self):
-    def ResetNote(self):
-        self.NoteStandby()
+    def GetStageNum(self, stage):
+        self.stage = stage
+        return self.stage
+        
+    
         
