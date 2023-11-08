@@ -26,7 +26,7 @@ class NoteManager():
             
     def SetNotesVelocity(self, speed):
         for note in self.noteLists:
-            note.noteSpeed = 3
+            note.noteSpeed = speed
         
     def LoadPatternList(self): # 패턴 파일 읽어서 리스트에 저장. 
         if self.stage == 0:
@@ -47,7 +47,7 @@ class NoteManager():
         #patternNum = random.randrange(patternRange)
         patternNum = random.randrange(1,patternRange+1)
         patternFile += str(patternNum)
-        print(patternFile)
+        #print(patternFile)
         
         with open(patternFile, 'r') as file: # 제목 형식 아직 안 정함
             for line in file:
@@ -62,10 +62,10 @@ class NoteManager():
         if self.ManagerOnTask():
             return
         while len(self.patternList) != 0:
-            print(str(len(self.patternList)))
+            #print(str(len(self.patternList)))
             patternInfo = self.patternList.pop(0) # 패턴정보 AREA / SPAWNTIME 불러옴.
             patternInfo = [int(patternInfo[0]), float(patternInfo[1])]
-            print(str(patternInfo))
+            #print(str(patternInfo))
             
             # 몇 초뒤에 나오게 할건지에 대한 코드 추가 필요
             for note in self.noteLists:

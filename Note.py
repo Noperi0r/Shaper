@@ -9,7 +9,7 @@ class Note: # 충돌판정 여기서
         self.areaNum = -1
         self.vertex = [[0,0] for i in range(4)]
         self.noteSpeed = noteSpeed
-        self.noteSize = 30
+        self.noteSize = 40
         self.shaper = shaper
         self.screen = screen
         self.isSpawned = False
