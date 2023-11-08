@@ -13,6 +13,8 @@ class Player():
         #self.shapeLength = math.dist(shaper.points[0], shaper.points[1]) 
         self.angleSpeed = 7
         self.playerDead = False
+        
+        self.playerColor = [255,255,255]
 
     def LoadPlayer(self, angleSpeed:int = 7):
         self.angleSpeed = angleSpeed
@@ -22,8 +24,15 @@ class Player():
     def RemovePlayer(self):
         self.playerPos = [0,0]
 
-    def DrawPlayer(self, surface: pygame.display):
-        pygame.draw.circle(surface, (255,255,255), self.playerPos, 10)
+    def DrawPlayer(self, surface: pygame.display, stage: int):
+        if stage == 1:
+            self.playerColor = [193, 119, 121]
+        elif stage == 2:
+            self.playerColor = [112, 122, 126]
+        elif stage == 3:
+            self.playerColor = [170,111,115]
+        
+        pygame.draw.circle(surface, self.playerColor, self.playerPos, 10)
 
     def GetPlayerRoutePoints(self): # !!. 비율 안 맞긴 함
         return self.shaper.playerRoutePoint

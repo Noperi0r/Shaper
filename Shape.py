@@ -10,6 +10,9 @@ class Shaper():
         self.eachAngle = (360 / self.n) * math.pi / 180.0 # ex n이 6이면 60도
         self.playerRoutePoint = [[0,0] for i in range (0, self.n)]
         
+        self.shapeColor = [255,255,255]
+        self.shapeLineColor = [0,0,0]
+        self.borderLineColor = [255,255,255]
 
     def MakeNPoints(self, screen: pygame.display, n: int): # n개의 points 생성
         if self.n != n:
@@ -32,22 +35,39 @@ class Shaper():
         # self. playerRoutePoint = playerRoutePoint
         
     # 이거 그냥 나중에 draw.polygon으로 변경            
-    def MakeShapeLines(self, screen: pygame.display):
-        pygame.draw.polygon(screen, (237, 31, 89), self.points)
+    def MakeShapeLines(self, screen: pygame.display, stage: int):
+        if stage == 1:
+            self.shapeColor = [253, 183, 185]
+            self.shapeLineColor = [193, 119, 121]
+        elif stage == 2:
+            self.shapeColor = [155, 168, 174]
+            self.shapeLineColor = [112, 122, 126]
+        elif stage == 3:
+            self.shapeColor = [238,169,144]
+            self.shapeLineColor = [170,111,115]
+        
+        pygame.draw.polygon(screen, self.shapeColor, self.points)
         for i in range(self.n):
             if i == 0:
-                pygame.draw.line(screen, (255, 255, 255), self.points[i],self.points[self.n-1], 10)
+                pygame.draw.line(screen, self.shapeLineColor, self.points[i],self.points[self.n-1], 10)
             else:
-                pygame.draw.line(screen, (255, 255, 255), self.points[i-1],self.points[i], 10)
+                pygame.draw.line(screen, self.shapeLineColor, self.points[i-1],self.points[i], 10)
                 
-    def DiscernNoteArea(self, screen: pygame.display, length:int=600):
+    def DiscernNoteArea(self, screen: pygame.display, length:int, stage: int):
         noteCoordinates = [[0,0] for i in range(self.n)]
+        if stage==1:
+            self.borderLineColor = [193, 119, 121]
+        elif stage==2:
+            self.borderLineColor = [112, 122, 126]
+        elif stage==3:
+            self.borderLineColor = [170,111,115]
+        
         for i in range(self.n):
             angle = self.eachAngle * i
             x = self.centerPoint[0] + length * math.cos(angle)
             y = self.centerPoint[1] + length * math.sin(angle)
             noteCoordinates[i] = [x,y]
-            pygame.draw.line(screen, (255, 0, 0), self.centerPoint , [x, y], 5)
+            pygame.draw.line(screen, self.borderLineColor, self.centerPoint , [x, y], 3)
             pygame.draw.circle(screen, (255,255,255), [x,y], 10)
         return noteCoordinates # n 6 이면 6개의 좌표 반환
     

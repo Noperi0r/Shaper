@@ -76,7 +76,7 @@ def GetDeltaTime(prevTime):
 def Stage1Loop():
     shaper.MakeNPoints(screen, 4)
     
-    borderCoords = shaper.DiscernNoteArea(screen, 900)
+    borderCoords = shaper.DiscernNoteArea(screen, 900, 1)
     
     # condition
     #noteManager.LoadPatternList()
@@ -87,9 +87,9 @@ def Stage1Loop():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
             player.AngleMove(keys)
-    player.DrawPlayer(screen)    
+    player.DrawPlayer(screen, 1)    
     
-    shaper.MakeShapeLines(screen)
+    shaper.MakeShapeLines(screen, 1)
     
     if player.playerDead:
         PlayerDeadEvent(seconds)
@@ -99,7 +99,7 @@ def Stage1Loop():
 def Stage2Loop():
     shaper.MakeNPoints(screen, 5)
     
-    borderCoords = shaper.DiscernNoteArea(screen, 900)
+    borderCoords = shaper.DiscernNoteArea(screen, 900, 2)
 
     noteManager.PatternReady() # 수정 필요
     noteManager.DeployPattern(borderCoords, screen, deltaTime, player)
@@ -107,9 +107,9 @@ def Stage2Loop():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
             player.AngleMove(keys)
-    player.DrawPlayer(screen)    
+    player.DrawPlayer(screen, 2)    
     
-    shaper.MakeShapeLines(screen)
+    shaper.MakeShapeLines(screen, 2)
     
     if player.playerDead:
         PlayerDeadEvent(seconds)
@@ -119,7 +119,7 @@ def Stage2Loop():
 def Stage3Loop():
     shaper.MakeNPoints(screen, 14)
     
-    borderCoords = shaper.DiscernNoteArea(screen, 900)
+    borderCoords = shaper.DiscernNoteArea(screen, 900, 3)
 
     noteManager.PatternReady() # 수정 필요
     noteManager.DeployPattern(borderCoords, screen, deltaTime, player)
@@ -127,9 +127,9 @@ def Stage3Loop():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
             player.AngleMove(keys)
-    player.DrawPlayer(screen)    
+    player.DrawPlayer(screen, 3)    
     
-    shaper.MakeShapeLines(screen)
+    shaper.MakeShapeLines(screen, 3)
     
     if player.playerDead:
         PlayerDeadEvent(seconds)
@@ -158,41 +158,37 @@ while running:
     #GetDeltaTime(prevTime)
         
     if level.isStage1:
-        screen.fill((0,0,0))   
+        screen.fill((247, 227, 219))   
         
         isTimerOn = True
         # 타이머 출력
         if isTimerOn:
-            seconds = level.Update_timer(seconds, deltaTime)
+            seconds = level.Update_timer(seconds, deltaTime, 1)
         if seconds == deltaTime:
             sound_Stage1.play()
         Stage1Loop()
 
     elif level.isStage2: 
-        screen.fill((0,0,0))   
+        screen.fill((227,232,234))   
         
         isTimerOn = True
         # 타이머 출력
         if isTimerOn:
-            seconds = level.Update_timer(seconds, deltaTime)
+            seconds = level.Update_timer(seconds, deltaTime, 2)
         if seconds == deltaTime:
             sound_Stage2.play()
         Stage2Loop()
 
     elif level.isStage3:
-        screen.fill((0,0,0))   
+        screen.fill((246,224,181))
         isTimerOn = True
         # 타이머 출력
         if isTimerOn:
-            seconds = level.Update_timer(seconds, deltaTime)
+            seconds = level.Update_timer(seconds, deltaTime, 3)
         if seconds == deltaTime:
             sound_Stage3.play()
             print('stage3')
         Stage3Loop()
-    # elif level.isStage4:
-    #     borderCoords =  shaper.DiscernNoteArea(screen, 300)
-    #     GetDeltaTime()
-    #     Stage4Loop()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -233,7 +229,7 @@ while running:
                 # 레벨 1 ~ 4로 전환
                 if event.key == pygame.K_1 : # 스테이지 1
                     sound_Button.play()
-                    level.Level_change(1, screen)
+                    level.Level_change(1)
                     space_to_main = True
                     esc_to_level_selection = True
                     isTimerOn = True
@@ -241,9 +237,11 @@ while running:
                     player.LoadPlayer()
                     noteManager.LoadManager(1)
                     noteManager.LoadPatternList()
+                    noteManager.SetNotesVelocity(5)
+
 
                 elif event.key == pygame.K_2: # 스테이지 2
-                    level.Level_change(2, screen)
+                    level.Level_change(2)
                     space_to_main = True
                     esc_to_level_selection = True
                     isTimerOn = True
@@ -251,9 +249,11 @@ while running:
                     player.LoadPlayer()
                     noteManager.LoadManager(2)
                     noteManager.LoadPatternList()
+                    noteManager.SetNotesVelocity(6)
+
                     
                 elif event.key == pygame.K_3: # 스테이지 3 
-                    level.Level_change(3, screen) 
+                    level.Level_change(3) 
                     space_to_main = True
                     esc_to_level_selection = True
                     isTimerOn = True  

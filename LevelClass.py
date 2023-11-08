@@ -14,11 +14,21 @@ class LevelManager():
         self.isStage3 = False
         self.isStage4 = False
 
-    def Update_timer(self, seconds, deltaTime):
+    def Update_timer(self, seconds, deltaTime, stage: int):
         # seconds += clock.get_time() / 1000
+        timerColor = [0,0,0]
+        if stage == 1:
+            timerColor = [193, 119, 121]
+        elif stage == 2:
+            timerColor = [112, 122, 126]
+        elif stage == 3:
+            timerColor = [170,111,115]
+            
+            
+        
         seconds += deltaTime
         font = pygame.font.Font(None, 36)
-        text = font.render(f" Score : {round(seconds, 2)}", True, (0, 255, 0))
+        text = font.render(f" Score : {round(seconds, 2)}", True, timerColor)
         self.screen.blit(text, (600, 20))
         return seconds
 
@@ -29,7 +39,7 @@ class LevelManager():
 
         # 글꼴 및 글꼴 크기 설정
         font = pygame.font.Font(None, 72)  # 기본 글꼴, 글꼴 크기 72
-        text = font.render("SHARPER", True, (255, 255, 255))  # 텍스트 렌더링
+        text = font.render("SHAPER", True, (255, 255, 255))  # 텍스트 렌더링
 
         # 텍스트 위치 설정
         text_x = center_x - (text.get_width() // 2)
@@ -71,12 +81,11 @@ class LevelManager():
         score_text = score_font.render(f" SCORE : {round(score, 2)}", True, (255, 255, 255))
         screen.blit(score_text, (start_x+75, start_y+100))
         
-
         self.isStage1 = False
         self.isStage2 = False
         self.isStage3 = False
         self.isStage4 = False
-
+    
     def Level_selection(self, screen):
         # 화면 생성 + 이벤트 발생시 해당함수 호출
         screen.fill((0,0,0))
@@ -109,29 +118,29 @@ class LevelManager():
         pygame.display.flip()
     
 
-    def Level_change(self,  level, screen):
+    def Level_change(self,  level):
         if level==1:
             print('level1')
             pygame.display.set_caption("Level 1")
-            screen.fill((255, 255, 255))
+            #screen.fill((255, 255, 255))
             self.isStage1 = True
 
         if level==2:
             print('level2')
             pygame.display.set_caption("Level 2")
-            screen.fill((255, 0, 0))
+            #screen.fill((255, 0, 0))
             self.isStage2 = True
 
         if level==3:
             print('level3')
             pygame.display.set_caption("Level 3")
-            screen.fill((0, 255, 0))
+            #screen.fill((0, 255, 0))
             self.isStage3 = True
 
         if level==4:
             print('level4')
             pygame.display.set_caption("Level 4")
-            screen.fill((0, 0, 255))
+            #screen.fill((0, 0, 255))
             self.isStage4 = True
 
 

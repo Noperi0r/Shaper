@@ -15,8 +15,10 @@ class Note: # 충돌판정 여기서
         self.isSpawned = False
         #noteManager.LoadNotes(self)
         self.spawnTime = -1
-        
         self.stage = 0
+
+        self.noteColor = [255,255,255]
+        self.noteLineColor = [0,0,0]    
         
     def GetAreaNum(self):
         return self.areaNum
@@ -108,8 +110,19 @@ class Note: # 충돌판정 여기서
                 self.NoteStandby()
                 print("RESET")
             
-            return pygame.draw.polygon(screen,(255,255,255), [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
-            
+            if self.stage == 1:
+                self.noteColor = [186, 223, 215]
+                self.noteLineColor = [96, 191, 193]
+            elif self.stage == 2:
+                self.noteColor = [155, 168, 174]
+                self.noteLineColor = [73,80,84]
+            elif self.stage == 3:
+                self.noteColor = [163,145,147]
+                self.noteLineColor = [102,84,94]
+            pygame.draw.lines(screen, self.noteLineColor, True, [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]], 8)
+            return pygame.draw.polygon(screen, self.noteColor, [self.vertex[0],self.vertex[1], self.vertex[3], self.vertex[2]])
+
+                
     def DeployNote(self, borderCoords, screen: pygame.display, deltaTime, player: Player):
         if not self.IsNoteStandby(deltaTime):
             self.MakeNote(borderCoords, screen)

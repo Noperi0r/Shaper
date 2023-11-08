@@ -38,7 +38,7 @@ class NoteManager():
             patternRange = 3 # 패턴 랜덤 숫자 넣을거
         elif self.stage == 2:
             patternFile += "S2_"
-            patternRange = 3
+            patternRange = 4
         elif self.stage == 3:
             patternFile += "S3_"
             patternRange = 3
@@ -47,7 +47,7 @@ class NoteManager():
         #patternNum = random.randrange(patternRange)
         patternNum = random.randrange(1,patternRange+1)
         patternFile += str(patternNum)
-        #print(patternFile)
+        print(patternFile)
         
         with open(patternFile, 'r') as file: # 제목 형식 아직 안 정함
             for line in file:
